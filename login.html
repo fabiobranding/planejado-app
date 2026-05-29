@@ -22,11 +22,13 @@ body{font-family:Arial,sans-serif;background:#E8F5E9;min-height:100vh;display:fl
 .form-group input:focus{border-color:#1B5E20}
 .btn-submit{width:100%;background:#1B5E20;color:#fff;padding:13px;border-radius:8px;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .2s;margin-top:4px}
 .btn-submit:hover{background:#2E7D32}
-.divider{text-align:center;color:#aaa;font-size:12px;margin:16px 0}
 .msg-erro{background:#FFEBEE;color:#c62828;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
 .msg-ok{background:#E8F5E9;color:#2E7D32;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
 .footer-link{text-align:center;padding:16px;font-size:13px;color:#888;background:#fafafa;border-top:1px solid #f0f0f0}
-.footer-link a{color:#1B5E20;font-weight:700}
+.footer-link a{color:#1B5E20;font-weight:700;text-decoration:none}
+.esqueceu{text-align:right;margin-top:-8px;margin-bottom:16px}
+.esqueceu a{font-size:12px;color:#888;text-decoration:none}
+.esqueceu a:hover{color:#1B5E20}
 </style>
 </head>
 <body>
@@ -49,8 +51,9 @@ body{font-family:Arial,sans-serif;background:#E8F5E9;min-height:100vh;display:fl
       </div>
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="login-senha" placeholder="••••••••">
+        <input type="password" id="login-senha" placeholder="••••••••" onkeydown="if(event.key==='Enter')fazerLogin()">
       </div>
+      <div class="esqueceu"><a href="esqueci-senha.html">Esqueceu sua senha?</a></div>
       <button class="btn-submit" onclick="fazerLogin()">Entrar</button>
     </div>
   </div>
@@ -94,150 +97,150 @@ body{font-family:Arial,sans-serif;background:#E8F5E9;min-height:100vh;display:fl
 </div>
 
 <script>
-// ── helpers de armazenamento ──────────────────────────────────────────
 function gerarId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-function formatBRL(val) {
-  return Number(val||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-}
 
-function getUsuarios() { return JSON.parse(localStorage.getItem('om_usuarios')||'[]'); }
+function getUsuarios() { return JSON.parse(localStorage.getItem('om_usuarios') || '[]'); }
 function setUsuarios(u) { localStorage.setItem('om_usuarios', JSON.stringify(u)); }
-
 function setUsuario(u) { localStorage.setItem('om_usuario', JSON.stringify(u)); }
-function setEmpresaU(id, e) { localStorage.setItem('om_empresa_'+id, JSON.stringify(e)); }
-function setOrcamentosU(id, list) { localStorage.setItem('om_orcamentos_'+id, JSON.stringify(list)); }
-function setCatalogoU(id, list) { localStorage.setItem('om_catalogo_'+id, JSON.stringify(list)); }
+function setEmpresaU(id, e) { localStorage.setItem('om_empresa_' + id, JSON.stringify(e)); }
+function setOrcamentosU(id, list) { localStorage.setItem('om_orcamentos_' + id, JSON.stringify(list)); }
+function setCatalogoU(id, list) { localStorage.setItem('om_catalogo_' + id, JSON.stringify(list)); }
 
-// ── tabs ──────────────────────────────────────────────────────────────
 function showTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i)=>{
-    t.classList.toggle('active', (i===0&&tab==='entrar')||(i===1&&tab==='cadastro'));
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && tab === 'entrar') || (i === 1 && tab === 'cadastro'));
   });
-  document.getElementById('panel-entrar').classList.toggle('active', tab==='entrar');
-  document.getElementById('panel-cadastro').classList.toggle('active', tab==='cadastro');
+  document.getElementById('panel-entrar').classList.toggle('active', tab === 'entrar');
+  document.getElementById('panel-cadastro').classList.toggle('active', tab === 'cadastro');
 }
 
-// ── login ─────────────────────────────────────────────────────────────
 function fazerLogin() {
-  const email = document.getElementById('login-email').value.trim();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
   const senha = document.getElementById('login-senha').value;
   const erroEl = document.getElementById('erro-entrar');
-  erroEl.style.display='none';
+  erroEl.style.display = 'none';
 
-  if (!email || !senha) { erroEl.textContent='Preencha todos os campos.'; erroEl.style.display='block'; return; }
+  if (!email || !senha) { erroEl.textContent = 'Preencha todos os campos.'; erroEl.style.display = 'block'; return; }
 
   const usuarios = getUsuarios();
-  const u = usuarios.find(x => x.email===email && x.senha===senha);
-  if (!u) { erroEl.textContent='E-mail ou senha incorretos.'; erroEl.style.display='block'; return; }
+  const u = usuarios.find(x => x.email.toLowerCase() === email && x.senha === senha);
+  if (!u) { erroEl.textContent = 'E-mail ou senha incorretos.'; erroEl.style.display = 'block'; return; }
 
   setUsuario(u);
   window.location.href = 'app/dashboard.html';
 }
 
-// ── cadastro ──────────────────────────────────────────────────────────
+function catalogoPadrao(gid) {
+  return [
+    { id: gid(), nome: 'Nicho embutido', descricao: 'Nicho em mármore sob medida', unidade: 'unidade' },
+    { id: gid(), nome: 'Alisar 3cm', descricao: 'Alisar em mármore 3cm de espessura', unidade: 'metro linear' },
+    { id: gid(), nome: 'Bancada', descricao: 'Bancada em mármore sob medida', unidade: 'm²' },
+    { id: gid(), nome: 'Piso sob medida', descricao: 'Piso em mármore com rodapé', unidade: 'm²' },
+    { id: gid(), nome: 'Soleira', descricao: 'Soleira em mármore', unidade: 'metro linear' },
+    { id: gid(), nome: 'Peitoril', descricao: 'Peitoril em mármore', unidade: 'metro linear' },
+    { id: gid(), nome: 'Prateleira', descricao: 'Prateleira em mármore', unidade: 'unidade' },
+    { id: gid(), nome: 'Pia de banheiro', descricao: 'Pia esculpida em mármore', unidade: 'unidade' },
+  ];
+}
+
 function fazerCadastro() {
   const nome       = document.getElementById('cad-nome').value.trim();
-  const email      = document.getElementById('cad-email').value.trim();
+  const email      = document.getElementById('cad-email').value.trim().toLowerCase();
   const marmoraria = document.getElementById('cad-marmoraria').value.trim();
   const telefone   = document.getElementById('cad-telefone').value.trim();
   const senha      = document.getElementById('cad-senha').value;
   const confirma   = document.getElementById('cad-confirma').value;
   const erroEl     = document.getElementById('erro-cadastro');
   const okEl       = document.getElementById('ok-cadastro');
-  erroEl.style.display='none'; okEl.style.display='none';
+  erroEl.style.display = 'none'; okEl.style.display = 'none';
 
-  if (!nome||!email||!marmoraria||!senha||!confirma) {
-    erroEl.textContent='Preencha todos os campos.'; erroEl.style.display='block'; return;
+  if (!nome || !email || !marmoraria || !senha || !confirma) {
+    erroEl.textContent = 'Preencha todos os campos.'; erroEl.style.display = 'block'; return;
   }
   if (senha.length < 6) {
-    erroEl.textContent='A senha deve ter pelo menos 6 caracteres.'; erroEl.style.display='block'; return;
+    erroEl.textContent = 'A senha deve ter pelo menos 6 caracteres.'; erroEl.style.display = 'block'; return;
   }
   if (senha !== confirma) {
-    erroEl.textContent='As senhas não coincidem.'; erroEl.style.display='block'; return;
+    erroEl.textContent = 'As senhas não coincidem.'; erroEl.style.display = 'block'; return;
   }
 
   const usuarios = getUsuarios();
-  if (usuarios.find(x => x.email===email)) {
-    erroEl.textContent='Este e-mail já está cadastrado.'; erroEl.style.display='block'; return;
+  if (usuarios.find(x => x.email.toLowerCase() === email)) {
+    erroEl.textContent = 'Este e-mail já está cadastrado.'; erroEl.style.display = 'block'; return;
   }
 
   const id = gerarId();
+  const gid = () => gerarId();
   const novoUsuario = { id, nome, email, marmoraria, telefone, senha };
   usuarios.push(novoUsuario);
   setUsuarios(usuarios);
   setUsuario(novoUsuario);
 
-  // Seed empresa
   setEmpresaU(id, {
-    nome: marmoraria,
-    telefone: telefone,
-    whatsapp: telefone,
-    instagram: '',
-    email: email,
-    endereco: '',
-    cnpj: '',
-    corPDF: '#1B5E20',
-    observacoes: '',
-    msgWhatsApp: ''
+    nome: marmoraria, telefone, whatsapp: telefone,
+    instagram: '', email, endereco: '', cnpj: '',
+    corPDF: '#1B5E20', observacoes: '', msgWhatsApp: ''
   });
 
-  // Seed catálogo
-  function gid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2); }
-  setCatalogoU(id, [
-    { id:gid(), nome:'Nicho embutido', descricao:'Nicho em mármore sob medida', unidade:'unidade' },
-    { id:gid(), nome:'Alisar 3cm', descricao:'Alisar em mármore 3cm de espessura', unidade:'metro linear' },
-    { id:gid(), nome:'Bancada', descricao:'Bancada em mármore sob medida', unidade:'m²' },
-    { id:gid(), nome:'Piso sob medida', descricao:'Piso em mármore com rodapé', unidade:'m²' },
-    { id:gid(), nome:'Soleira', descricao:'Soleira em mármore', unidade:'metro linear' },
-    { id:gid(), nome:'Peitoril', descricao:'Peitoril em mármore', unidade:'metro linear' },
-    { id:gid(), nome:'Prateleira', descricao:'Prateleira em mármore', unidade:'unidade' },
-    { id:gid(), nome:'Pia de banheiro', descricao:'Pia esculpida em mármore', unidade:'unidade' },
-  ]);
+  setCatalogoU(id, catalogoPadrao(gid));
 
-  // Seed orçamentos demo
-  const ano = new Date().getFullYear();
-  const orc1 = {
-    id:gid(), numero:ano+'/0001', cliente:'Maria Silva', data:'15/05/'+ano,
-    validade:'15 dias', material:'Mármore Champagne', valor:8500, status:'Aprovado',
-    ambientes:[
-      { nome:'Suíte Master', itens:[
-        { desc:'Nicho embutido', dim:'89 x 36 cm', qtd:'2 unidades', obs:'' },
-        { desc:'Alisar 3cm', dim:'3 cm', qtd:'', obs:'' }
-      ]},
-      { nome:'Banho Master', itens:[
-        { desc:'Nicho embutido', dim:'1,12 x 36 cm', qtd:'2 unidades', obs:'' },
-        { desc:'Bancada', dim:'1,20 x 0,60 m', qtd:'1 unidade', obs:'' }
-      ]}
-    ]
-  };
-  const orc2 = {
-    id:gid(), numero:ano+'/0002', cliente:'João Pereira', data:'18/05/'+ano,
-    validade:'15 dias', material:'Granito Preto São Gabriel', valor:3200, status:'Em aberto',
-    ambientes:[
-      { nome:'Cozinha', itens:[
-        { desc:'Bancada', dim:'2,40 x 0,60 m', qtd:'1 unidade', obs:'Com cuba embutida' },
-        { desc:'Soleira', dim:'0,90 x 0,15 m', qtd:'1 unidade', obs:'' }
-      ]}
-    ]
-  };
-  const orc3 = {
-    id:gid(), numero:ano+'/0003', cliente:'Ana Rodrigues', data:'22/05/'+ano,
-    validade:'30 dias', material:'Quartzo Branco Polar', valor:12800, status:'Em produção',
-    ambientes:[
-      { nome:'Cozinha Gourmet', itens:[
-        { desc:'Bancada', dim:'3,60 x 0,70 m', qtd:'1 unidade', obs:'Ilha central' },
-        { desc:'Piso sob medida', dim:'12 m²', qtd:'', obs:'Com rodapé' }
-      ]},
-      { nome:'Área Gourmet', itens:[
-        { desc:'Bancada', dim:'2,00 x 0,60 m', qtd:'1 unidade', obs:'' }
-      ]}
-    ]
-  };
-  setOrcamentosU(id, [orc3, orc2, orc1]);
+  // ── Orçamentos: 1 exemplo de mês anterior (stats ficam zeradas) ──
+  const anoEx = new Date().getFullYear();
+  const mesEx = new Date().getMonth(); // mês anterior (0-indexed, então mês atual - 1)
+  const mesStr = mesEx === 0 ? '12' : String(mesEx).padStart(2, '0');
+  const anoStr = mesEx === 0 ? String(anoEx - 1) : String(anoEx);
 
-  okEl.textContent='Conta criada! Redirecionando...';
-  okEl.style.display='block';
-  setTimeout(()=>{ window.location.href='app/dashboard.html'; }, 1200);
+  // Orçamento especial para Daiane
+  if (email === 'daiane.fgs2019@outlook.com') {
+    const orcDaiane = {
+      id: gid(), numero: anoEx + '/0001',
+      cliente: 'Diana e Bruna', data: '29/05/' + anoEx,
+      validade: '15 dias', material: 'Mármore Champagne',
+      valor: 16160, status: 'Em aberto',
+      ambientes: [
+        { nome: 'Suíte 1', itens: [
+          { desc: 'Nicho embutido', dim: '89 x 36 cm', qtd: '2 unidades', obs: '' },
+          { desc: 'Alisar', dim: '3 cm', qtd: '', obs: '' }
+        ]},
+        { nome: 'Suíte 2', itens: [
+          { desc: 'Nicho embutido', dim: '73,5 x 36 cm', qtd: '2 unidades', obs: '' },
+          { desc: 'Alisar', dim: '3 cm', qtd: '', obs: '' }
+        ]},
+        { nome: 'Suíte 3', itens: [
+          { desc: 'Nicho embutido', dim: '106,5 x 36 cm', qtd: '2 unidades', obs: '' },
+          { desc: 'Alisar', dim: '3 cm', qtd: '', obs: '' }
+        ]},
+        { nome: 'Banho Master', itens: [
+          { desc: 'Nicho embutido', dim: '1,12 x 36 cm', qtd: '2 unidades', obs: '' },
+          { desc: 'Nicho embutido com prateleiras', dim: '1,00 x 22 cm', qtd: '4 unidades', obs: 'Com prateleiras' },
+          { desc: 'Alisar', dim: '3 cm', qtd: '', obs: '' }
+        ]},
+        { nome: 'Piso', itens: [
+          { desc: 'Piso sob medida com rodapé', dim: 'Sob medida', qtd: '', obs: '' }
+        ]}
+      ]
+    };
+    setOrcamentosU(id, [orcDaiane]);
+  } else {
+    // Conta normal: 1 orçamento de exemplo do mês anterior (stats zeradas)
+    const orcExemplo = {
+      id: gid(), numero: anoStr + '/0001',
+      cliente: 'Exemplo — Maria Silva', data: '10/' + mesStr + '/' + anoStr,
+      validade: '15 dias', material: 'Mármore Champagne',
+      valor: 4500, status: 'Aprovado',
+      ambientes: [
+        { nome: 'Banheiro', itens: [
+          { desc: 'Bancada', dim: '1,20 x 0,60 m', qtd: '1 unidade', obs: '' },
+          { desc: 'Nicho embutido', dim: '60 x 30 cm', qtd: '2 unidades', obs: '' }
+        ]}
+      ]
+    };
+    setOrcamentosU(id, [orcExemplo]);
+  }
+
+  okEl.textContent = 'Conta criada com sucesso! Redirecionando...';
+  okEl.style.display = 'block';
+  setTimeout(() => { window.location.href = 'app/dashboard.html'; }, 1200);
 }
 </script>
 </body>

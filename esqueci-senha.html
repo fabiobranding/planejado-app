@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recuperar senha — OrçaMármore</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#E8F5E9;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.logo{font-size:28px;font-weight:900;color:#1B5E20;margin-bottom:28px;text-align:center}
+.logo span{color:#4CAF50}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(27,94,32,.12);width:100%;max-width:420px;overflow:hidden}
+.card-header{background:#1B5E20;color:#fff;padding:20px 28px}
+.card-header h2{font-size:18px;font-weight:700}
+.card-header p{font-size:13px;color:#c8e6c9;margin-top:4px}
+.form-body{padding:28px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.form-group input{width:100%;border:1.5px solid #ddd;border-radius:8px;padding:11px 14px;font-size:14px;outline:none;font-family:Arial;transition:border .2s}
+.form-group input:focus{border-color:#1B5E20}
+.btn-submit{width:100%;background:#1B5E20;color:#fff;padding:13px;border-radius:8px;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.btn-submit:hover{background:#2E7D32}
+.msg-erro{background:#FFEBEE;color:#c62828;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
+.msg-ok{background:#E8F5E9;color:#2E7D32;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
+.footer-link{text-align:center;padding:16px;font-size:13px;color:#888;background:#fafafa;border-top:1px solid #f0f0f0}
+.footer-link a{color:#1B5E20;font-weight:700;text-decoration:none}
+.step{display:none}
+.step.active{display:block}
+.icon{font-size:48px;text-align:center;margin-bottom:16px}
+.success-box{text-align:center;padding:8px 0}
+.success-box h3{color:#1B5E20;font-size:18px;margin-bottom:8px}
+.success-box p{color:#666;font-size:14px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="logo">Orça<span>Mármore</span></div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>🔑 Recuperar senha</h2>
+    <p>Informe seu e-mail para redefinir a senha</p>
+  </div>
+
+  <div class="form-body">
+    <div class="msg-erro" id="msg-erro"></div>
+    <div class="msg-ok" id="msg-ok"></div>
+
+    <!-- Passo 1: digitar e-mail -->
+    <div class="step active" id="step1">
+      <div class="form-group">
+        <label>E-mail cadastrado</label>
+        <input type="email" id="rec-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')verificarEmail()">
+      </div>
+      <button class="btn-submit" onclick="verificarEmail()">Continuar</button>
+    </div>
+
+    <!-- Passo 2: nova senha -->
+    <div class="step" id="step2">
+      <div class="form-group">
+        <label>Nova senha</label>
+        <input type="password" id="nova-senha" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label>Confirmar nova senha</label>
+        <input type="password" id="confirma-senha" placeholder="Repita a nova senha">
+      </div>
+      <button class="btn-submit" onclick="redefinirSenha()">Salvar nova senha</button>
+    </div>
+
+    <!-- Passo 3: sucesso -->
+    <div class="step" id="step3">
+      <div class="success-box">
+        <div class="icon">✅</div>
+        <h3>Senha redefinida!</h3>
+        <p>Sua senha foi atualizada com sucesso.<br>Faça login com a nova senha.</p>
+        <br>
+        <button class="btn-submit" onclick="location.href='login.html'">Ir para o login</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-link">
+    <a href="login.html">&larr; Voltar ao login</a>
+  </div>
+</div>
+
+<script>
+let emailEncontrado = '';
+
+function getUsuarios() { return JSON.parse(localStorage.getItem('om_usuarios') || '[]'); }
+function setUsuarios(u) { localStorage.setItem('om_usuarios', JSON.stringify(u)); }
+
+function mostrarErro(msg) {
+  const el = document.getElementById('msg-erro');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('msg-ok').style.display = 'none';
+}
+function mostrarOk(msg) {
+  const el = document.getElementById('msg-ok');
+  el.textContent = msg; el.style.display = 'block';
+  document.getElementById('msg-erro').style.display = 'none';
+}
+function limparMsgs() {
+  document.getElementById('msg-erro').style.display = 'none';
+  document.getElementById('msg-ok').style.display = 'none';
+}
+function irParaStep(n) {
+  document.querySelectorAll('.step').forEach((s, i) => s.classList.toggle('active', i === n - 1));
+  limparMsgs();
+}
+
+function verificarEmail() {
+  const email = document.getElementById('rec-email').value.trim().toLowerCase();
+  if (!email) { mostrarErro('Informe o e-mail cadastrado.'); return; }
+
+  const usuarios = getUsuarios();
+  const u = usuarios.find(x => x.email.toLowerCase() === email);
+
+  if (!u) {
+    mostrarErro('E-mail não encontrado. Verifique ou crie uma conta.');
+    return;
+  }
+
+  emailEncontrado = email;
+  mostrarOk('E-mail encontrado! Defina sua nova senha abaixo.');
+  setTimeout(() => irParaStep(2), 800);
+}
+
+function redefinirSenha() {
+  const nova = document.getElementById('nova-senha').value;
+  const confirma = document.getElementById('confirma-senha').value;
+
+  if (!nova || !confirma) { mostrarErro('Preencha os dois campos.'); return; }
+  if (nova.length < 6) { mostrarErro('A senha deve ter pelo menos 6 caracteres.'); return; }
+  if (nova !== confirma) { mostrarErro('As senhas não coincidem.'); return; }
+
+  const usuarios = getUsuarios();
+  const idx = usuarios.findIndex(x => x.email.toLowerCase() === emailEncontrado);
+  if (idx < 0) { mostrarErro('Erro inesperado. Tente novamente.'); return; }
+
+  usuarios[idx].senha = nova;
+  setUsuarios(usuarios);
+
+  irParaStep(3);
+}
+</script>
+</body>
+</html>
