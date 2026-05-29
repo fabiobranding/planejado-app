@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar — Planejado.app</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #3E2723;
+      --amber: #FF8F00;
+      --sand: #F5F0E8;
+      --white: #fff;
+      --gray-300: #DEE2E6;
+      --gray-500: #ADB5BD;
+      --gray-700: #495057;
+      --danger: #C62828;
+      --success: #2E7D32;
+    }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--sand);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+    }
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .auth-logo h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary);
+    }
+    .auth-logo h1 span { color: var(--amber); }
+    .auth-logo p {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+    .auth-card {
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.1);
+      overflow: hidden;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 16px;
+      background: none;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      color: var(--gray-500);
+      transition: all .15s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--amber);
+    }
+    .tab-panel { display: none; padding: 28px; }
+    .tab-panel.active { display: block; }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      color: #212529;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-control:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(255,143,0,.1); }
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover { background: #5D4037; }
+    .alert {
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      margin-bottom: 16px;
+    }
+    .alert-danger { background: #FFEBEE; color: var(--danger); border: 1px solid #EF9A9A; }
+    .alert-success { background: #E8F5E9; color: var(--success); border: 1px solid #A5D6A7; }
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--gray-500);
+    }
+    .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="auth-container">
+  <div class="auth-logo">
+    <h1>Planejado<span>.app</span></h1>
+    <p>Sistema de orçamentos para marcenarias</p>
+  </div>
+
+  <div class="auth-card">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Entrar</button>
+      <button class="tab-btn" onclick="switchTab('cadastro')">Criar conta</button>
+    </div>
+
+    <!-- Login -->
+    <div class="tab-panel active" id="panel-login">
+      <div id="erroLogin" class="alert alert-danger" style="display:none"></div>
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input type="email" class="form-control" id="loginEmail" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" class="form-control" id="loginSenha" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-submit" onclick="fazerLogin()">Entrar na conta</button>
+    </div>
+
+    <!-- Cadastro -->
+    <div class="tab-panel" id="panel-cadastro">
+      <div id="erroCadastro" class="alert alert-danger" style="display:none"></div>
+      <div class="form-group">
+        <label class="form-label">Nome completo *</label>
+        <input type="text" class="form-control" id="cadNome" placeholder="João da Silva">
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-mail *</label>
+        <input type="email" class="form-control" id="cadEmail" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nome da marcenaria *</label>
+        <input type="text" class="form-control" id="cadMarcenaria" placeholder="Marcenaria Silva">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha *</label>
+        <input type="password" class="form-control" id="cadSenha" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirmar senha *</label>
+        <input type="password" class="form-control" id="cadSenha2" placeholder="Repita a senha">
+      </div>
+      <button class="btn-submit" onclick="fazerCadastro()" style="background:var(--amber)">Criar minha conta grátis</button>
+    </div>
+  </div>
+
+  <div class="auth-footer">
+    <a href="index.html">&#x2190; Voltar para o site</a>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i === 0) === (tab === 'login')));
+  document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+  document.getElementById('panel-cadastro').classList.toggle('active', tab === 'cadastro');
+}
+
+// Auth helpers
+function getUsuarios() { try { return JSON.parse(localStorage.getItem('_usuarios') || '[]'); } catch { return []; } }
+function setUsuarios(u) { localStorage.setItem('_usuarios', JSON.stringify(u)); }
+function setUsuario(u) { localStorage.setItem('usuario', JSON.stringify(u)); }
+
+function fazerLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const senha = document.getElementById('loginSenha').value;
+  const erro = document.getElementById('erroLogin');
+  erro.style.display = 'none';
+
+  if (!email || !senha) { erro.textContent = 'Preencha e-mail e senha.'; erro.style.display = 'block'; return; }
+
+  const usuarios = getUsuarios();
+  const u = usuarios.find(x => x.email === email && x.senha === senha);
+  if (!u) { erro.textContent = 'E-mail ou senha incorretos.'; erro.style.display = 'block'; return; }
+
+  setUsuario(u);
+  window.location.href = 'app/dashboard.html';
+}
+
+function fazerCadastro() {
+  const nome       = document.getElementById('cadNome').value.trim();
+  const email      = document.getElementById('cadEmail').value.trim().toLowerCase();
+  const marcenaria = document.getElementById('cadMarcenaria').value.trim();
+  const senha      = document.getElementById('cadSenha').value;
+  const senha2     = document.getElementById('cadSenha2').value;
+  const erro = document.getElementById('erroCadastro');
+  erro.style.display = 'none';
+
+  if (!nome || !email || !marcenaria || !senha) { erro.textContent = 'Preencha todos os campos obrigatórios.'; erro.style.display = 'block'; return; }
+  if (senha.length < 6) { erro.textContent = 'A senha deve ter pelo menos 6 caracteres.'; erro.style.display = 'block'; return; }
+  if (senha !== senha2) { erro.textContent = 'As senhas não coincidem.'; erro.style.display = 'block'; return; }
+
+  const usuarios = getUsuarios();
+  if (usuarios.find(x => x.email === email)) { erro.textContent = 'Este e-mail já está cadastrado.'; erro.style.display = 'block'; return; }
+
+  const novoUsuario = { id: Date.now().toString(36), nome, email, marcenaria, senha };
+  usuarios.push(novoUsuario);
+  setUsuarios(usuarios);
+  setUsuario(novoUsuario);
+
+  // Config inicial da empresa
+  localStorage.setItem('empresa', JSON.stringify({ nome: marcenaria, email: email }));
+
+  // Seed de dados demo
+  seedDemoData(novoUsuario);
+
+  window.location.href = 'app/dashboard.html';
+}
+
+function gerarId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+function formatBRL(val) { return Number(val||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function seedDemoData(usuario) {
+  if (localStorage.getItem('_demo_seeded')) return;
+  localStorage.setItem('_demo_seeded', '1');
+
+  const catalogo = [
+    { id: gerarId(), nome: 'Armário de Cozinha Aéreo', descricao: 'Armário aéreo com 2 portas', preco: 850, unidade: 'unidade' },
+    { id: gerarId(), nome: 'Armário Inferior', descricao: 'Balcão inferior com gaveta', preco: 720, unidade: 'unidade' },
+    { id: gerarId(), nome: 'Guarda-roupa 3 Portas', descricao: 'Guarda-roupa em MDF com espelho', preco: 2400, unidade: 'unidade' },
+    { id: gerarId(), nome: 'Nicho Decorativo', descricao: 'Nicho em MDF 30x30cm', preco: 180, unidade: 'unidade' },
+    { id: gerarId(), nome: 'Painel TV', descricao: 'Painel para TV até 65" com prateleiras', preco: 1600, unidade: 'unidade' },
+  ];
+  localStorage.setItem('catalogo', JSON.stringify(catalogo));
+
+  const now = new Date();
+  const mesAtual = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const orcamentos = [
+    {
+      id: gerarId(), numero: `${now.getFullYear()}/0001`,
+      cliente: 'Ana Paula Ferreira', clienteTel: '11999990001',
+      data: mesAtual + '-05', validade: '15', status: 'aprovado',
+      material: 'MDF 18mm BP Branco', desconto: 0, total: 8500,
+      ambientes: [
+        { id: gerarId(), nome: 'Cozinha', itens: [
+          { id: gerarId(), descricao: 'Armário de Cozinha Aéreo', dimensoes: '2,40x0,35', qtd: 4, acabamento: 'BP Branco', preco: 850, obs: '' },
+          { id: gerarId(), descricao: 'Armário Inferior', dimensoes: '2,40x0,60', qtd: 3, acabamento: 'BP Branco', preco: 720, obs: 'Com gavetas' },
+        ]},
+        { id: gerarId(), nome: 'Área de Serviço', itens: [
+          { id: gerarId(), descricao: 'Armário Inferior', dimensoes: '1,20x0,60', qtd: 1, acabamento: 'BP Branco', preco: 720, obs: '' },
+        ]},
+      ],
+      obs: '1. Prazo de entrega: 30 dias após aprovação\n2. Montagem inclusa\n3. Garantia de 1 ano',
+    },
+    {
+      id: gerarId(), numero: `${now.getFullYear()}/0002`,
+      cliente: 'Roberto Almeida', clienteTel: '11988880002',
+      data: mesAtual + '-10', validade: '30', status: 'em_aberto',
+      material: 'MDF 15mm', desconto: 200, total: 5700,
+      ambientes: [
+        { id: gerarId(), nome: 'Quarto Master', itens: [
+          { id: gerarId(), descricao: 'Guarda-roupa 3 Portas', dimensoes: '2,20x2,10', qtd: 1, acabamento: 'Carvalho', preco: 2400, obs: '' },
+          { id: gerarId(), descricao: 'Nicho Decorativo', dimensoes: '0,30x0,30', qtd: 6, acabamento: 'Carvalho', preco: 180, obs: '' },
+        ]},
+      ],
+      obs: '1. Prazo de entrega: 25 dias\n2. Frete por conta do cliente',
+    },
+    {
+      id: gerarId(), numero: `${now.getFullYear()}/0003`,
+      cliente: 'Carla Mendes', clienteTel: '11977770003',
+      data: mesAtual + '-15', validade: '15', status: 'em_producao',
+      material: 'MDF 18mm Carvalho', desconto: 0, total: 12800,
+      ambientes: [
+        { id: gerarId(), nome: 'Sala de Estar', itens: [
+          { id: gerarId(), descricao: 'Painel TV', dimensoes: '3,00x2,20', qtd: 1, acabamento: 'Carvalho Natural', preco: 1600, obs: '' },
+          { id: gerarId(), descricao: 'Nicho Decorativo', dimensoes: '0,40x0,40', qtd: 8, acabamento: 'Carvalho Natural', preco: 180, obs: '' },
+        ]},
+        { id: gerarId(), nome: 'Home Office', itens: [
+          { id: gerarId(), descricao: 'Armário Inferior', dimensoes: '1,80x0,55', qtd: 2, acabamento: 'Grafite', preco: 720, obs: 'Com puxa-puxa' },
+        ]},
+      ],
+      obs: '1. Prazo de entrega: 45 dias\n2. Montagem inclusa\n3. Pagamento: 50% entrada + 50% na entrega',
+    },
+  ];
+  localStorage.setItem('orcamentos', JSON.stringify(orcamentos));
+}
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const active = document.querySelector('.tab-panel.active');
+  if (!active) return;
+  if (active.id === 'panel-login') fazerLogin();
+  else fazerCadastro();
+});
+
+// Redirect if already logged in
+try {
+  const u = JSON.parse(localStorage.getItem('usuario') || 'null');
+  if (u) window.location.href = 'app/dashboard.html';
+} catch {}
+</script>
+</body>
+</html>
