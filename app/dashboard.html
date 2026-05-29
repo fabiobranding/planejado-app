@@ -1,164 +1,89 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Planejado.app</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — OrçaMármore</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="app-layout">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="sidebar-logo">Planejado<span>.app</span></div>
-    <a href="dashboard.html" class="nav-link active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </a>
-    <a href="orcamentos.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Orçamentos
-    </a>
-    <a href="catalogo.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Catálogo
-    </a>
-    <a href="configuracoes.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Configurações
-    </a>
-    <a href="planos.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Planos
-    </a>
-    <div class="sidebar-bottom">
-      <button onclick="logout()" class="btn-logout">&#x2192; Sair</button>
+  <div id="sidebar"></div>
+  <div class="main">
+    <div class="topbar">
+      <h2>Dashboard</h2>
+      <div class="user-info" id="user-name"></div>
     </div>
-  </nav>
-
-  <!-- HEADER -->
-  <header class="app-header">
-    <button class="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-    <div>
-      <div class="app-header-title" id="headerEmpresa">Minha Empresa</div>
-      <div class="app-header-sub">Dashboard</div>
-    </div>
-    <div class="header-right">
-      <a href="novo-orcamento.html" class="btn btn-amber">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Novo Orçamento
-      </a>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="app-main">
-    <h1 class="page-title">Dashboard</h1>
-    <p class="page-subtitle">Bem-vindo de volta! Aqui está o resumo do mês.</p>
-
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card highlight">
-        <div class="stat-label">Total orçado no mês</div>
-        <div class="stat-value" id="statTotal">R$ 0</div>
-        <div class="stat-sub" id="statTotalCount">0 orçamentos</div>
+    <div class="content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 style="color:#1B5E20;font-size:16px">Visão Geral</h3>
+        <button class="btn-novo" onclick="location.href='novo-orcamento.html'">+ Novo Orçamento</button>
       </div>
-      <div class="stat-card success">
-        <div class="stat-label">Aprovados</div>
-        <div class="stat-value" id="statAprovados">0</div>
-        <div class="stat-sub">neste mês</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Taxa de aprovação</div>
-        <div class="stat-value" id="statTaxa">0%</div>
-        <div class="stat-sub">do total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Aguardando resposta</div>
-        <div class="stat-value" id="statAguardando">0</div>
-        <div class="stat-sub">em aberto</div>
+      <div class="stats-grid" id="stats"></div>
+      <div class="card">
+        <div class="card-title">Últimos Orçamentos</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>N°</th><th>Cliente</th><th>Data</th><th>Valor</th><th>Status</th><th>Ações</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
-
-    <!-- Recent table -->
-    <div class="table-container">
-      <div class="table-header">
-        <div class="table-title">Últimos Orçamentos</div>
-        <a href="orcamentos.html" class="btn btn-outline btn-sm">Ver todos</a>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Nº</th>
-            <th>Cliente</th>
-            <th>Data</th>
-            <th>Valor</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaRecentes">
-          <tr><td colspan="6"><div class="empty-state"><p>Nenhum orçamento ainda. <a href="novo-orcamento.html" style="color:var(--amber)">Criar primeiro orçamento</a></p></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
+  </div>
 </div>
-
 <script src="js/core.js"></script>
+<script src="js/pdf.js"></script>
 <script>
 requireAuth();
+seedDemoData();
+document.getElementById('sidebar').innerHTML = renderSidebar('dashboard');
+const u = getUsuario();
+const emp = getEmpresa();
+document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || (u && u.nome) || '';
 
-function renderDashboard() {
-  const orc = getOrcamentos();
-  const now = new Date();
-  const mesAtual = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+const orcs = getOrcamentos();
+const mes = new Date().getMonth();
+const ano = new Date().getFullYear();
+const doMes = orcs.filter(function(o) {
+  var partes = (o.data || '').split('/');
+  if (partes.length < 3) return false;
+  return parseInt(partes[1])-1 === mes && parseInt(partes[2]) === ano;
+});
+const totalMes = doMes.reduce(function(s, o) { return s + (Number(o.valor) || 0); }, 0);
+const aprovados = doMes.filter(function(o) { return o.status === 'Aprovado'; }).length;
+const taxa = doMes.length ? Math.round(aprovados / doMes.length * 100) : 0;
+const aguardando = orcs.filter(function(o) { return o.status === 'Em aberto'; }).length;
 
-  const doMes = orc.filter(o => o.data && o.data.startsWith(mesAtual));
-  const totalMes = doMes.reduce((s, o) => s + Number(o.total || 0), 0);
-  const aprovados = doMes.filter(o => o.status === 'aprovado').length;
-  const taxa = doMes.length ? Math.round((aprovados / doMes.length) * 100) : 0;
-  const aguardando = orc.filter(o => o.status === 'em_aberto').length;
+document.getElementById('stats').innerHTML =
+  '<div class="stat-card"><div class="stat-label">Total Orçado (mês)</div><div class="stat-value">R$ ' + formatBRL(totalMes) + '</div></div>' +
+  '<div class="stat-card"><div class="stat-label">Aprovados (mês)</div><div class="stat-value">' + aprovados + '</div></div>' +
+  '<div class="stat-card"><div class="stat-label">Taxa de Aprovação</div><div class="stat-value">' + taxa + '%</div></div>' +
+  '<div class="stat-card"><div class="stat-label">Aguardando Resposta</div><div class="stat-value">' + aguardando + '</div></div>';
 
-  document.getElementById('statTotal').textContent = 'R$ ' + formatBRL(totalMes);
-  document.getElementById('statTotalCount').textContent = doMes.length + ' orçamento' + (doMes.length !== 1 ? 's' : '');
-  document.getElementById('statAprovados').textContent = aprovados;
-  document.getElementById('statTaxa').textContent = taxa + '%';
-  document.getElementById('statAguardando').textContent = aguardando;
+const ultimos = orcs.slice(0, 5);
+document.getElementById('tbody').innerHTML = ultimos.length
+  ? ultimos.map(function(o) {
+      return '<tr>' +
+        '<td>' + (o.numero||'') + '</td>' +
+        '<td><strong>' + (o.cliente||'') + '</strong></td>' +
+        '<td>' + (o.data||'') + '</td>' +
+        '<td>R$ ' + formatBRL(o.valor) + '</td>' +
+        '<td>' + statusBadge(o.status) + '</td>' +
+        '<td><div class="actions">' +
+          '<button class="btn btn-sm btn-outline" onclick="location.href=\'novo-orcamento.html?id=' + o.id + '\'">Editar</button>' +
+          '<button class="btn btn-sm btn-primary" onclick="verPDF(\'' + o.id + '\')">PDF</button>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('')
+  : '<tr><td colspan="6" style="text-align:center;padding:32px;color:#aaa">Nenhum orçamento ainda. Crie o primeiro!</td></tr>';
 
-  const recentes = orc.slice(0, 5);
-  const tbody = document.getElementById('tabelaRecentes');
-  if (recentes.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>Nenhum orçamento ainda. <a href="novo-orcamento.html" style="color:var(--amber)">Criar primeiro orçamento</a></p></div></td></tr>';
-    return;
-  }
-  tbody.innerHTML = recentes.map(o => `
-    <tr>
-      <td><strong>${o.numero || '—'}</strong></td>
-      <td>${o.cliente || '—'}</td>
-      <td>${formatDate(o.data)}</td>
-      <td><strong>R$ ${formatBRL(o.total)}</strong></td>
-      <td>${statusBadge(o.status)}</td>
-      <td class="actions-cell">
-        <button onclick="gerarPDFDash('${o.id}')" class="btn-table btn-table-pdf">PDF</button>
-        <a href="novo-orcamento.html?id=${o.id}" class="btn-table btn-table-edit">Editar</a>
-      </td>
-    </tr>
-  `).join('');
+function verPDF(id) {
+  var orc = getOrcamentos().find(function(o) { return o.id === id; });
+  if (orc) gerarPDF(orc);
 }
-
-function gerarPDFDash(id) {
-  const o = getOrcamento(id);
-  if (o) gerarPDF(o);
-}
-
-renderDashboard();
 </script>
-<script src="js/pdf.js"></script>
 </body>
 </html>

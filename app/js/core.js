@@ -1,246 +1,160 @@
-/* ============================================
-   Planejado.app — core.js
-   Auth, localStorage helpers, utilitários
-   ============================================ */
+// ── AUTH ──────────────────────────────────────────────────────────────
+function getUsuario() { return JSON.parse(localStorage.getItem('om_usuario') || 'null'); }
+function setUsuario(u) { localStorage.setItem('om_usuario', JSON.stringify(u)); }
+function logout() { localStorage.removeItem('om_usuario'); window.location.href = '../login.html'; }
+function requireAuth() { if (!getUsuario()) { window.location.href = '../login.html'; } }
 
-// ─── Auth ──────────────────────────────────────
-function getUsuario() {
-  try { return JSON.parse(localStorage.getItem('usuario') || 'null'); }
-  catch { return null; }
-}
-function setUsuario(u) { localStorage.setItem('usuario', JSON.stringify(u)); }
-function logout() { localStorage.removeItem('usuario'); window.location.href = '../login.html'; }
-function requireAuth() { if (!getUsuario()) window.location.href = '../login.html'; }
-
-// ─── Empresa ───────────────────────────────────
+// ── EMPRESA ───────────────────────────────────────────────────────────
 function getEmpresa() {
-  try { return JSON.parse(localStorage.getItem('empresa') || '{}'); }
-  catch { return {}; }
+  const u = getUsuario();
+  const key = 'om_empresa_' + (u ? u.id : '0');
+  return JSON.parse(localStorage.getItem(key) || '{}');
 }
-function setEmpresa(e) { localStorage.setItem('empresa', JSON.stringify(e)); }
+function setEmpresa(e) {
+  const u = getUsuario();
+  const key = 'om_empresa_' + (u ? u.id : '0');
+  localStorage.setItem(key, JSON.stringify(e));
+}
 
-// ─── Orçamentos ────────────────────────────────
+// ── ORCAMENTOS ────────────────────────────────────────────────────────
 function getOrcamentos() {
-  try { return JSON.parse(localStorage.getItem('orcamentos') || '[]'); }
-  catch { return []; }
+  const u = getUsuario();
+  const key = 'om_orcamentos_' + (u ? u.id : '0');
+  return JSON.parse(localStorage.getItem(key) || '[]');
 }
-function setOrcamentos(o) { localStorage.setItem('orcamentos', JSON.stringify(o)); }
+function setOrcamentos(list) {
+  const u = getUsuario();
+  const key = 'om_orcamentos_' + (u ? u.id : '0');
+  localStorage.setItem(key, JSON.stringify(list));
+}
 function saveOrcamento(orc) {
-  const lista = getOrcamentos();
-  const idx = lista.findIndex(o => o.id === orc.id);
-  if (idx >= 0) lista[idx] = orc;
-  else lista.unshift(orc);
-  setOrcamentos(lista);
+  const list = getOrcamentos();
+  const idx = list.findIndex(o => o.id === orc.id);
+  if (idx >= 0) list[idx] = orc;
+  else list.unshift(orc);
+  setOrcamentos(list);
 }
-function getOrcamento(id) { return getOrcamentos().find(o => o.id === id) || null; }
 function deleteOrcamento(id) {
-  const lista = getOrcamentos().filter(o => o.id !== id);
-  setOrcamentos(lista);
+  setOrcamentos(getOrcamentos().filter(o => o.id !== id));
 }
 
-// ─── Catálogo ──────────────────────────────────
+// ── CATALOGO ──────────────────────────────────────────────────────────
 function getCatalogo() {
-  try { return JSON.parse(localStorage.getItem('catalogo') || '[]'); }
-  catch { return []; }
+  const u = getUsuario();
+  const key = 'om_catalogo_' + (u ? u.id : '0');
+  return JSON.parse(localStorage.getItem(key) || '[]');
 }
-function setCatalogo(c) { localStorage.setItem('catalogo', JSON.stringify(c)); }
-function saveCatalogoItem(item) {
-  const lista = getCatalogo();
-  const idx = lista.findIndex(i => i.id === item.id);
-  if (idx >= 0) lista[idx] = item;
-  else lista.push(item);
-  setCatalogo(lista);
-}
-function deleteCatalogoItem(id) {
-  setCatalogo(getCatalogo().filter(i => i.id !== id));
+function setCatalogo(list) {
+  const u = getUsuario();
+  const key = 'om_catalogo_' + (u ? u.id : '0');
+  localStorage.setItem(key, JSON.stringify(list));
 }
 
-// ─── Helpers ───────────────────────────────────
-function gerarId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+// ── UTILS ─────────────────────────────────────────────────────────────
+function gerarId() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
 function formatBRL(val) {
   return Number(val || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function parseBRL(str) {
-  if (typeof str === 'number') return str;
-  return parseFloat(String(str || '0').replace(/\./g, '').replace(',', '.')) || 0;
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('pt-BR');
-}
-
-function todayISO() {
-  return new Date().toISOString().split('T')[0];
+  return parseFloat((str || '0').toString().replace(/\./g, '').replace(',', '.')) || 0;
 }
 
 function proximoNumero() {
   const ano = new Date().getFullYear();
-  const lista = getOrcamentos();
-  const count = lista.filter(o => o.numero && String(o.numero).startsWith(String(ano))).length;
-  return `${ano}/${String(count + 1).padStart(4, '0')}`;
+  const list = getOrcamentos();
+  const deste_ano = list.filter(o => (o.numero || '').startsWith(String(ano)));
+  return ano + '/' + String(deste_ano.length + 1).padStart(4, '0');
 }
 
-// ─── Status helpers ────────────────────────────
-const STATUS_LABELS = {
-  'em_aberto':     'Em aberto',
-  'aprovado':      'Aprovado',
-  'em_producao':   'Em produção',
-  'entregue':      'Entregue',
-  'recusado':      'Recusado',
-};
-const STATUS_BADGES = {
-  'em_aberto':   'badge-yellow',
-  'aprovado':    'badge-green',
-  'em_producao': 'badge-blue',
-  'entregue':    'badge-gray',
-  'recusado':    'badge-red',
-};
+function hoje() {
+  return new Date().toLocaleDateString('pt-BR');
+}
+
 function statusBadge(status) {
-  const cls = STATUS_BADGES[status] || 'badge-gray';
-  const label = STATUS_LABELS[status] || status;
-  return `<span class="badge ${cls}">${label}</span>`;
+  const map = {
+    'Em aberto': 'badge-aberto',
+    'Aprovado': 'badge-aprovado',
+    'Em producao': 'badge-producao',
+    'Em produção': 'badge-producao',
+    'Entregue': 'badge-entregue',
+    'Recusado': 'badge-recusado'
+  };
+  return '<span class="badge ' + (map[status] || 'badge-aberto') + '">' + (status || 'Em aberto') + '</span>';
 }
 
-// ─── Render sidebar ativo ──────────────────────
-function setActiveNav(page) {
-  document.querySelectorAll('.nav-link').forEach(a => {
-    a.classList.toggle('active', a.getAttribute('href') === page || a.href.endsWith(page));
-  });
+function renderSidebar(active) {
+  const u = getUsuario();
+  const emp = getEmpresa();
+  return '<aside class="sidebar">' +
+    '<div class="sidebar-logo">Orça<span>Mármore</span></div>' +
+    '<nav>' +
+    '<a href="dashboard.html" class="' + (active==='dashboard'?'active':'') + '">📊 Dashboard</a>' +
+    '<a href="orcamentos.html" class="' + (active==='orcamentos'?'active':'') + '">📄 Orçamentos</a>' +
+    '<a href="novo-orcamento.html" class="' + (active==='novo'?'active':'') + '">➕ Novo Orçamento</a>' +
+    '<a href="catalogo.html" class="' + (active==='catalogo'?'active':'') + '">📦 Catálogo</a>' +
+    '<a href="configuracoes.html" class="' + (active==='config'?'active':'') + '">⚙️ Configurações</a>' +
+    '<a href="planos.html" class="' + (active==='planos'?'active':'') + '">💎 Planos</a>' +
+    '</nav>' +
+    '<div class="sidebar-bottom">' +
+    '<div style="font-size:12px;color:#a5d6a7;margin-bottom:8px">' + (emp.nome || (u && u.marmoraria) || '') + '</div>' +
+    '<button class="btn-logout" onclick="logout()">Sair</button>' +
+    '</div></aside>';
 }
 
-// ─── Preencher nome empresa no header ─────────
-function renderHeader() {
-  const empresa = getEmpresa();
-  const usuario = getUsuario();
-  const el = document.getElementById('headerEmpresa');
-  if (el) el.textContent = empresa.nome || (usuario && usuario.marcenaria) || 'Minha Empresa';
-}
-
-// ─── Hamburger menu ────────────────────────────
-function initHamburger() {
-  const btn = document.querySelector('.hamburger');
-  const sidebar = document.querySelector('.sidebar');
-  if (!btn || !sidebar) return;
-  btn.addEventListener('click', () => sidebar.classList.toggle('open'));
-  document.addEventListener('click', e => {
-    if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !btn.contains(e.target)) {
-      sidebar.classList.remove('open');
-    }
-  });
-}
-
-// ─── Dados de demonstração ─────────────────────
+// ── SEED DE DADOS DEMO ────────────────────────────────────────────────
 function seedDemoData() {
-  if (localStorage.getItem('_demo_seeded')) return;
-  localStorage.setItem('_demo_seeded', '1');
+  if (getCatalogo().length > 0) return; // ja tem dados
 
-  // Catálogo demo
-  const catalogo = [
-    { id: gerarId(), nome: 'Armário de Cozinha Aéreo', descricao: 'Armário aéreo com 2 portas', preco: 850, unidade: 'unidade' },
-    { id: gerarId(), nome: 'Armário Inferior', descricao: 'Balcão inferior com gaveta', preco: 720, unidade: 'unidade' },
-    { id: gerarId(), nome: 'Guarda-roupa 3 Portas', descricao: 'Guarda-roupa em MDF com espelho', preco: 2400, unidade: 'unidade' },
-    { id: gerarId(), nome: 'Nicho Decorativo', descricao: 'Nicho em MDF 30x30cm', preco: 180, unidade: 'unidade' },
-    { id: gerarId(), nome: 'Painel TV', descricao: 'Painel para TV até 65" com prateleiras', preco: 1600, unidade: 'unidade' },
-  ];
-  setCatalogo(catalogo);
+  setCatalogo([
+    { id: gerarId(), nome: 'Nicho embutido', descricao: 'Nicho em mármore sob medida', unidade: 'unidade' },
+    { id: gerarId(), nome: 'Alisar 3cm', descricao: 'Alisar em mármore 3cm de espessura', unidade: 'metro linear' },
+    { id: gerarId(), nome: 'Bancada', descricao: 'Bancada em mármore sob medida', unidade: 'm²' },
+    { id: gerarId(), nome: 'Piso sob medida', descricao: 'Piso em mármore com rodapé', unidade: 'm²' },
+    { id: gerarId(), nome: 'Soleira', descricao: 'Soleira em mármore', unidade: 'metro linear' },
+    { id: gerarId(), nome: 'Peitoril', descricao: 'Peitoril em mármore', unidade: 'metro linear' },
+    { id: gerarId(), nome: 'Prateleira', descricao: 'Prateleira em mármore', unidade: 'unidade' },
+    { id: gerarId(), nome: 'Pia de banheiro', descricao: 'Pia esculpida em mármore', unidade: 'unidade' },
+  ]);
 
-  // Orçamentos demo
-  const now = new Date();
-  const mesAtual = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-  const orcamentos = [
-    {
-      id: gerarId(),
-      numero: `${now.getFullYear()}/0001`,
-      cliente: 'Ana Paula Ferreira',
-      clienteTel: '11999990001',
-      data: mesAtual + '-05',
-      validade: '15',
-      status: 'aprovado',
-      material: 'MDF 18mm BP Branco',
-      desconto: 0,
-      total: 8500,
-      ambientes: [
-        {
-          id: gerarId(),
-          nome: 'Cozinha',
-          itens: [
-            { id: gerarId(), descricao: 'Armário de Cozinha Aéreo', dimensoes: '2,40x0,35', qtd: 4, acabamento: 'BP Branco', preco: 850, obs: '' },
-            { id: gerarId(), descricao: 'Armário Inferior', dimensoes: '2,40x0,60', qtd: 3, acabamento: 'BP Branco', preco: 720, obs: 'Com gavetas' },
-          ]
-        },
-        {
-          id: gerarId(),
-          nome: 'Área de Serviço',
-          itens: [
-            { id: gerarId(), descricao: 'Armário Inferior', dimensoes: '1,20x0,60', qtd: 1, acabamento: 'BP Branco', preco: 720, obs: '' },
-          ]
-        }
-      ],
-      obs: '1. Prazo de entrega: 30 dias após aprovação\n2. Montagem inclusa\n3. Garantia de 1 ano',
-    },
-    {
-      id: gerarId(),
-      numero: `${now.getFullYear()}/0002`,
-      cliente: 'Roberto Almeida',
-      clienteTel: '11988880002',
-      data: mesAtual + '-10',
-      validade: '30',
-      status: 'em_aberto',
-      material: 'MDF 15mm',
-      desconto: 200,
-      total: 5700,
-      ambientes: [
-        {
-          id: gerarId(),
-          nome: 'Quarto Master',
-          itens: [
-            { id: gerarId(), descricao: 'Guarda-roupa 3 Portas', dimensoes: '2,20x2,10', qtd: 1, acabamento: 'Carvalho', preco: 2400, obs: '' },
-            { id: gerarId(), descricao: 'Nicho Decorativo', dimensoes: '0,30x0,30', qtd: 6, acabamento: 'Carvalho', preco: 180, obs: '' },
-          ]
-        }
-      ],
-      obs: '1. Prazo de entrega: 25 dias\n2. Frete por conta do cliente',
-    },
-    {
-      id: gerarId(),
-      numero: `${now.getFullYear()}/0003`,
-      cliente: 'Carla Mendes',
-      clienteTel: '11977770003',
-      data: mesAtual + '-15',
-      validade: '15',
-      status: 'em_producao',
-      material: 'MDF 18mm Carvalho',
-      desconto: 0,
-      total: 12800,
-      ambientes: [
-        {
-          id: gerarId(),
-          nome: 'Sala de Estar',
-          itens: [
-            { id: gerarId(), descricao: 'Painel TV', dimensoes: '3,00x2,20', qtd: 1, acabamento: 'Carvalho Natural', preco: 1600, obs: '' },
-            { id: gerarId(), descricao: 'Nicho Decorativo', dimensoes: '0,40x0,40', qtd: 8, acabamento: 'Carvalho Natural', preco: 180, obs: '' },
-          ]
-        },
-        {
-          id: gerarId(),
-          nome: 'Home Office',
-          itens: [
-            { id: gerarId(), descricao: 'Armário Inferior', dimensoes: '1,80x0,55', qtd: 2, acabamento: 'Grafite', preco: 720, obs: 'Com puxa-puxa' },
-          ]
-        }
-      ],
-      obs: '1. Prazo de entrega: 45 dias\n2. Montagem inclusa\n3. Pagamento: 50% entrada + 50% na entrega',
-    },
-  ];
-  setOrcamentos(orcamentos);
+  const ano = new Date().getFullYear();
+  const orc1 = {
+    id: gerarId(), numero: ano+'/0001', cliente: 'Maria Silva', data: '15/05/'+ano,
+    validade: '15 dias', material: 'Mármore Champagne', valor: 8500, status: 'Aprovado',
+    ambientes: [
+      { nome: 'Suíte Master', itens: [
+        { desc: 'Nicho embutido', dim: '89 x 36 cm', qtd: '2 unidades', obs: '' },
+        { desc: 'Alisar 3cm', dim: '3 cm', qtd: '', obs: '' }
+      ]},
+      { nome: 'Banho Master', itens: [
+        { desc: 'Nicho embutido', dim: '1,12 x 36 cm', qtd: '2 unidades', obs: '' },
+        { desc: 'Bancada', dim: '1,20 x 0,60 m', qtd: '1 unidade', obs: '' }
+      ]}
+    ]
+  };
+  const orc2 = {
+    id: gerarId(), numero: ano+'/0002', cliente: 'João Pereira', data: '18/05/'+ano,
+    validade: '15 dias', material: 'Granito Preto São Gabriel', valor: 3200, status: 'Em aberto',
+    ambientes: [
+      { nome: 'Cozinha', itens: [
+        { desc: 'Bancada', dim: '2,40 x 0,60 m', qtd: '1 unidade', obs: 'Com cuba embutida' },
+        { desc: 'Soleira', dim: '0,90 x 0,15 m', qtd: '1 unidade', obs: '' }
+      ]}
+    ]
+  };
+  const orc3 = {
+    id: gerarId(), numero: ano+'/0003', cliente: 'Ana Rodrigues', data: '22/05/'+ano,
+    validade: '30 dias', material: 'Quartzo Branco Polar', valor: 12800, status: 'Em produção',
+    ambientes: [
+      { nome: 'Cozinha Gourmet', itens: [
+        { desc: 'Bancada', dim: '3,60 x 0,70 m', qtd: '1 unidade', obs: 'Ilha central' },
+        { desc: 'Piso sob medida', dim: '12 m²', qtd: '', obs: 'Com rodapé' }
+      ]},
+      { nome: 'Área Gourmet', itens: [
+        { desc: 'Bancada', dim: '2,00 x 0,60 m', qtd: '1 unidade', obs: '' }
+      ]}
+    ]
+  };
+  setOrcamentos([orc3, orc2, orc1]);
 }
-
-// ─── Inicialização ─────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  initHamburger();
-  renderHeader();
-});

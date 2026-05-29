@@ -1,183 +1,122 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planos — Planejado.app</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planos — OrçaMármore</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="app-layout">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="sidebar-logo">Planejado<span>.app</span></div>
-    <a href="dashboard.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </a>
-    <a href="orcamentos.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Orçamentos
-    </a>
-    <a href="catalogo.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Catálogo
-    </a>
-    <a href="configuracoes.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Configurações
-    </a>
-    <a href="planos.html" class="nav-link active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Planos
-    </a>
-    <div class="sidebar-bottom">
-      <button onclick="logout()" class="btn-logout">&#x2192; Sair</button>
+  <div id="sidebar"></div>
+  <div class="main">
+    <div class="topbar">
+      <h2>Planos</h2>
+      <div class="user-info" id="user-name"></div>
     </div>
-  </nav>
-
-  <!-- HEADER -->
-  <header class="app-header">
-    <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
-    <div>
-      <div class="app-header-title" id="headerEmpresa">Minha Empresa</div>
-      <div class="app-header-sub">Planos e Assinaturas</div>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="app-main">
-    <h1 class="page-title">Planos e Assinaturas</h1>
-    <p class="page-subtitle">Escolha o plano ideal para sua marcenaria.</p>
-
-    <div class="plans-grid">
-      <!-- Grátis -->
-      <div class="plan-card">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-          <div class="plan-name">Grátis</div>
-          <span class="badge badge-green">Seu plano atual</span>
-        </div>
-        <div class="plan-price">R$ 0<span>/mês</span></div>
-        <div class="plan-features">
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Até 10 orçamentos/mês
-          </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            PDF profissional
-          </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Catálogo de itens
-          </div>
-          <div class="plan-feature" style="color:#aaa">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Sem logo no PDF
-          </div>
-          <div class="plan-feature" style="color:#aaa">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#ddd" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Sem envio por WhatsApp integrado
-          </div>
-        </div>
-        <button class="btn btn-outline" style="width:100%" disabled>Plano atual</button>
+    <div class="content">
+      <div style="text-align:center;margin-bottom:32px">
+        <h3 style="font-size:22px;color:#1B5E20;margin-bottom:8px">Escolha o plano ideal para sua marmoraria</h3>
+        <p style="color:#666;font-size:14px">Comece grátis e faça upgrade quando precisar</p>
       </div>
 
-      <!-- Pro -->
-      <div class="plan-card featured">
-        <div class="plan-badge">Mais popular</div>
-        <div class="plan-name" style="margin-top:8px">Pro</div>
-        <div class="plan-price">R$ 49<span>/mês</span></div>
-        <div class="plan-features">
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Orçamentos ilimitados
+      <div class="planos-grid">
+        <!-- Grátis -->
+        <div class="plano-card" style="position:relative">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#4CAF50;color:#fff;font-size:11px;font-weight:700;padding:3px 14px;border-radius:20px">
+            PLANO ATUAL
           </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Logo no PDF
+          <div class="plano-nome">Grátis</div>
+          <div class="plano-preco">R$ 0<span>/mês</span></div>
+          <ul class="plano-features">
+            <li>Até 5 orçamentos por mês</li>
+            <li>PDF profissional</li>
+            <li>Envio por WhatsApp</li>
+            <li>Catálogo de itens</li>
+            <li class="no">Histórico ilimitado</li>
+            <li class="no">Logo no PDF</li>
+            <li class="no">Assinatura digital</li>
+            <li class="no">Lembretes automáticos</li>
+          </ul>
+          <button class="btn btn-outline" style="width:100%;padding:12px;font-size:14px;font-weight:700;border-radius:8px" disabled>Plano atual</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="plano-card destaque" style="position:relative">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#1B5E20;color:#fff;font-size:11px;font-weight:700;padding:3px 14px;border-radius:20px">
+            MAIS POPULAR
           </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Envio WhatsApp integrado
+          <div class="plano-nome">Pro</div>
+          <div class="plano-preco">R$ 49<span>/mês</span></div>
+          <ul class="plano-features">
+            <li>Orçamentos ilimitados</li>
+            <li>PDF profissional</li>
+            <li>Envio por WhatsApp</li>
+            <li>Catálogo de itens</li>
+            <li>Histórico completo</li>
+            <li>Logo da empresa no PDF</li>
+            <li class="no">Assinatura digital</li>
+            <li class="no">Lembretes automáticos</li>
+          </ul>
+          <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;font-weight:700;border-radius:8px" onclick="assinar('Pro R$49')">Assinar Pro</button>
+        </div>
+
+        <!-- Business -->
+        <div class="plano-card">
+          <div class="plano-nome">Business</div>
+          <div class="plano-preco">R$ 99<span>/mês</span></div>
+          <ul class="plano-features">
+            <li>Tudo do plano Pro</li>
+            <li>Assinatura digital</li>
+            <li>Lembretes automáticos</li>
+            <li>Relatórios avançados</li>
+            <li>Suporte prioritário</li>
+            <li>Multi-usuários</li>
+            <li>Personalização avançada</li>
+            <li>API de integração</li>
+          </ul>
+          <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;font-weight:700;border-radius:8px" onclick="assinar('Business R$99')">Assinar Business</button>
+        </div>
+      </div>
+
+      <!-- FAQ rápido -->
+      <div class="card" style="margin-top:20px">
+        <div class="card-title">Perguntas frequentes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div>
+            <div style="font-weight:700;color:#1B5E20;margin-bottom:4px;font-size:13px">Posso cancelar a qualquer momento?</div>
+            <div style="font-size:13px;color:#666">Sim. Sem fidelidade, sem multa. Cancele quando quiser pelo WhatsApp de suporte.</div>
           </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Dashboard completo
+          <div>
+            <div style="font-weight:700;color:#1B5E20;margin-bottom:4px;font-size:13px">Meus dados ficam salvos ao cancelar?</div>
+            <div style="font-size:13px;color:#666">Seus orçamentos ficam disponíveis por 60 dias após o cancelamento para download.</div>
           </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Suporte prioritário
+          <div>
+            <div style="font-weight:700;color:#1B5E20;margin-bottom:4px;font-size:13px">O pagamento é seguro?</div>
+            <div style="font-size:13px;color:#666">Sim. Usamos Pix e cartão de crédito com criptografia de ponta.</div>
+          </div>
+          <div>
+            <div style="font-weight:700;color:#1B5E20;margin-bottom:4px;font-size:13px">Tem suporte?</div>
+            <div style="font-size:13px;color:#666">Sim! Suporte via WhatsApp em horário comercial para todos os planos.</div>
           </div>
         </div>
-        <button class="btn btn-amber" style="width:100%" onclick="alert('Em breve! Entraremos em contato quando disponível.')">Assinar agora</button>
       </div>
 
-      <!-- Business -->
-      <div class="plan-card">
-        <div class="plan-name">Business</div>
-        <div class="plan-price">R$ 99<span>/mês</span></div>
-        <div class="plan-features">
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Tudo do Pro
-          </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Múltiplos usuários
-          </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Relatórios avançados
-          </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Backup na nuvem
-          </div>
-          <div class="plan-feature">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Suporte WhatsApp exclusivo
-          </div>
-        </div>
-        <button class="btn btn-primary" style="width:100%" onclick="alert('Em breve! Entraremos em contato quando disponível.')">Assinar agora</button>
-      </div>
     </div>
-
-    <!-- Tabela comparativa -->
-    <div class="table-container">
-      <div class="table-header">
-        <div class="table-title">Comparativo de recursos</div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Recurso</th>
-            <th style="text-align:center">Grátis</th>
-            <th style="text-align:center;color:var(--amber)">Pro</th>
-            <th style="text-align:center">Business</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Orçamentos por mês</td><td style="text-align:center">10</td><td style="text-align:center;font-weight:700">Ilimitados</td><td style="text-align:center;font-weight:700">Ilimitados</td></tr>
-          <tr><td>Geração de PDF</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr><td>Logo no PDF</td><td style="text-align:center;color:#ccc">&#10007;</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr><td>Catálogo de itens</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr><td>Envio WhatsApp</td><td style="text-align:center;color:#ccc">&#10007;</td><td style="text-align:center">&#10003;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr><td>Dashboard com métricas</td><td style="text-align:center;color:#ccc">Básico</td><td style="text-align:center">Completo</td><td style="text-align:center">Avançado</td></tr>
-          <tr><td>Múltiplos usuários</td><td style="text-align:center;color:#ccc">&#10007;</td><td style="text-align:center;color:#ccc">&#10007;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr><td>Backup na nuvem</td><td style="text-align:center;color:#ccc">&#10007;</td><td style="text-align:center;color:#ccc">&#10007;</td><td style="text-align:center">&#10003;</td></tr>
-          <tr><td>Suporte</td><td style="text-align:center">Email</td><td style="text-align:center">Prioritário</td><td style="text-align:center">WhatsApp exclusivo</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-  </main>
+  </div>
 </div>
 
 <script src="js/core.js"></script>
-<script>requireAuth();</script>
+<script>
+requireAuth();
+document.getElementById('sidebar').innerHTML = renderSidebar('planos');
+const u = getUsuario();
+const emp = getEmpresa();
+document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || '';
+
+function assinar(plano) {
+  alert('Em breve! Entre em contato pelo WhatsApp para assinar o plano ' + plano + ' e receber condições especiais de lançamento.');
+}
+</script>
 </body>
 </html>

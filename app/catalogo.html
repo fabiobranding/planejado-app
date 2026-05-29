@@ -1,111 +1,65 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo — Planejado.app</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catálogo — OrçaMármore</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
 <div class="app-layout">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
-    <div class="sidebar-logo">Planejado<span>.app</span></div>
-    <a href="dashboard.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </a>
-    <a href="orcamentos.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Orçamentos
-    </a>
-    <a href="catalogo.html" class="nav-link active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      Catálogo
-    </a>
-    <a href="configuracoes.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Configurações
-    </a>
-    <a href="planos.html" class="nav-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Planos
-    </a>
-    <div class="sidebar-bottom">
-      <button onclick="logout()" class="btn-logout">&#x2192; Sair</button>
+  <div id="sidebar"></div>
+  <div class="main">
+    <div class="topbar">
+      <h2>Catálogo de Itens</h2>
+      <div class="user-info" id="user-name"></div>
     </div>
-  </nav>
+    <div class="content">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 style="color:#1B5E20;font-size:16px">Itens do Catálogo</h3>
+        <button class="btn-novo" onclick="abrirModal()">+ Novo Item</button>
+      </div>
 
-  <!-- HEADER -->
-  <header class="app-header">
-    <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
-    <div>
-      <div class="app-header-title" id="headerEmpresa">Minha Empresa</div>
-      <div class="app-header-sub">Catálogo de Itens</div>
+      <div class="card">
+        <div class="toolbar">
+          <input type="text" id="busca" placeholder="Buscar item..." oninput="renderTabela()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Nome</th><th>Descrição</th><th>Unidade</th><th>Ações</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div class="header-right">
-      <button class="btn btn-amber" onclick="abrirModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Novo Item
-      </button>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="app-main">
-    <h1 class="page-title">Catálogo de Itens</h1>
-    <p class="page-subtitle">Itens salvos aqui aparecem como sugestão ao montar orçamentos.</p>
-
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Descrição padrão</th>
-            <th>Preço unitário</th>
-            <th>Unidade</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaCatalogo"></tbody>
-      </table>
-    </div>
-  </main>
+  </div>
 </div>
 
-<!-- Modal item -->
-<div class="modal-backdrop" id="modalItem">
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
   <div class="modal">
-    <div class="modal-title" id="modalTitle">Novo Item</div>
-    <input type="hidden" id="itemId">
-    <div class="form-group">
-      <label class="form-label">Nome do item *</label>
-      <input type="text" class="form-control" id="itemNome" placeholder="ex: Armário de Cozinha Aéreo">
+    <div class="modal-title" id="modal-title">Novo Item</div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>Nome do item</label>
+      <input type="text" id="m-nome" placeholder="Ex: Bancada, Nicho embutido...">
     </div>
-    <div class="form-group">
-      <label class="form-label">Descrição padrão</label>
-      <input type="text" class="form-control" id="itemDesc" placeholder="ex: Armário aéreo com 2 portas em MDF">
+    <div class="form-group" style="margin-bottom:14px">
+      <label>Descrição</label>
+      <input type="text" id="m-desc" placeholder="Descrição detalhada">
     </div>
-    <div class="form-row cols-2">
-      <div class="form-group">
-        <label class="form-label">Preço unitário (R$)</label>
-        <input type="number" class="form-control" id="itemPreco" min="0" step="0.01" placeholder="0,00">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Unidade</label>
-        <select class="form-control" id="itemUnidade">
-          <option value="unidade">Unidade</option>
-          <option value="m2">m²</option>
-          <option value="ml">Metro linear</option>
-          <option value="par">Par</option>
-        </select>
-      </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>Unidade</label>
+      <select id="m-unidade">
+        <option>unidade</option>
+        <option>m²</option>
+        <option>metro linear</option>
+        <option>conjunto</option>
+        <option>serviço</option>
+      </select>
     </div>
-    <div id="erroItem" class="alert alert-danger" style="display:none"></div>
-    <div class="modal-actions">
+    <div class="modal-footer">
       <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="salvarItem()">Salvar</button>
     </div>
@@ -115,84 +69,88 @@
 <script src="js/core.js"></script>
 <script>
 requireAuth();
+seedDemoData();
+document.getElementById('sidebar').innerHTML = renderSidebar('catalogo');
+const u = getUsuario();
+const emp = getEmpresa();
+document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || '';
+
+var editandoId = null;
 
 function renderTabela() {
-  const lista = getCatalogo();
-  const tbody = document.getElementById('tabelaCatalogo');
-  if (lista.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>Nenhum item no catálogo ainda.</p></div></td></tr>';
+  var busca = document.getElementById('busca').value.toLowerCase();
+  var cat = getCatalogo().filter(function(c) {
+    return !busca || (c.nome||'').toLowerCase().includes(busca) || (c.descricao||'').toLowerCase().includes(busca);
+  });
+  var tbody = document.getElementById('tbody');
+  if (!cat.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:#aaa">Nenhum item no catálogo.</td></tr>';
     return;
   }
-  tbody.innerHTML = lista.map(i => `
-    <tr>
-      <td><strong>${i.nome || '—'}</strong></td>
-      <td style="color:#666;font-size:.875rem">${i.descricao || '—'}</td>
-      <td>R$ ${formatBRL(i.preco)}</td>
-      <td><span class="badge badge-gray">${i.unidade || 'unidade'}</span></td>
-      <td class="actions-cell">
-        <button onclick="editarItem('${i.id}')" class="btn-table btn-table-edit">Editar</button>
-        <button onclick="excluirItem('${i.id}')" class="btn-table btn-table-del">Excluir</button>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = cat.map(function(c) {
+    return '<tr>' +
+      '<td><strong>' + (c.nome||'') + '</strong></td>' +
+      '<td style="color:#666">' + (c.descricao||'') + '</td>' +
+      '<td><span class="badge badge-aprovado">' + (c.unidade||'') + '</span></td>' +
+      '<td><div class="actions">' +
+        '<button class="btn btn-sm btn-outline" onclick="editarItem(\'' + c.id + '\')">Editar</button>' +
+        '<button class="btn btn-sm btn-danger" onclick="excluirItem(\'' + c.id + '\')">Excluir</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
 }
 
 function abrirModal(id) {
-  document.getElementById('erroItem').style.display = 'none';
+  editandoId = null;
+  document.getElementById('modal-title').textContent = 'Novo Item';
+  document.getElementById('m-nome').value = '';
+  document.getElementById('m-desc').value = '';
+  document.getElementById('m-unidade').value = 'unidade';
   if (id) {
-    const item = getCatalogo().find(i => i.id === id);
-    if (!item) return;
-    document.getElementById('modalTitle').textContent = 'Editar Item';
-    document.getElementById('itemId').value = item.id;
-    document.getElementById('itemNome').value = item.nome || '';
-    document.getElementById('itemDesc').value = item.descricao || '';
-    document.getElementById('itemPreco').value = item.preco || 0;
-    document.getElementById('itemUnidade').value = item.unidade || 'unidade';
-  } else {
-    document.getElementById('modalTitle').textContent = 'Novo Item';
-    document.getElementById('itemId').value = '';
-    document.getElementById('itemNome').value = '';
-    document.getElementById('itemDesc').value = '';
-    document.getElementById('itemPreco').value = '';
-    document.getElementById('itemUnidade').value = 'unidade';
+    var item = getCatalogo().find(function(c) { return c.id === id; });
+    if (item) {
+      editandoId = id;
+      document.getElementById('modal-title').textContent = 'Editar Item';
+      document.getElementById('m-nome').value = item.nome || '';
+      document.getElementById('m-desc').value = item.descricao || '';
+      document.getElementById('m-unidade').value = item.unidade || 'unidade';
+    }
   }
-  document.getElementById('modalItem').classList.add('open');
+  document.getElementById('modal').classList.add('open');
 }
 
 function fecharModal() {
-  document.getElementById('modalItem').classList.remove('open');
-}
-
-function salvarItem() {
-  const nome = document.getElementById('itemNome').value.trim();
-  if (!nome) {
-    document.getElementById('erroItem').textContent = 'Informe o nome do item.';
-    document.getElementById('erroItem').style.display = 'block';
-    return;
-  }
-  const id = document.getElementById('itemId').value || gerarId();
-  const item = {
-    id,
-    nome,
-    descricao: document.getElementById('itemDesc').value.trim(),
-    preco: parseFloat(document.getElementById('itemPreco').value) || 0,
-    unidade: document.getElementById('itemUnidade').value,
-  };
-  saveCatalogoItem(item);
-  fecharModal();
-  renderTabela();
+  document.getElementById('modal').classList.remove('open');
 }
 
 function editarItem(id) { abrirModal(id); }
 
-function excluirItem(id) {
-  if (!confirm('Excluir este item do catálogo?')) return;
-  deleteCatalogoItem(id);
+function salvarItem() {
+  var nome = document.getElementById('m-nome').value.trim();
+  var descricao = document.getElementById('m-desc').value.trim();
+  var unidade = document.getElementById('m-unidade').value;
+  if (!nome) { alert('Informe o nome do item.'); return; }
+  var cat = getCatalogo();
+  if (editandoId) {
+    var idx = cat.findIndex(function(c) { return c.id === editandoId; });
+    if (idx >= 0) { cat[idx].nome = nome; cat[idx].descricao = descricao; cat[idx].unidade = unidade; }
+  } else {
+    cat.push({ id: gerarId(), nome: nome, descricao: descricao, unidade: unidade });
+  }
+  setCatalogo(cat);
+  fecharModal();
   renderTabela();
 }
 
-document.getElementById('modalItem').addEventListener('click', e => {
-  if (e.target === document.getElementById('modalItem')) fecharModal();
+function excluirItem(id) {
+  if (!confirm('Excluir este item do catálogo?')) return;
+  setCatalogo(getCatalogo().filter(function(c) { return c.id !== id; }));
+  renderTabela();
+}
+
+// Fechar modal clicando fora
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) fecharModal();
 });
 
 renderTabela();
