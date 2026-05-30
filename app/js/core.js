@@ -110,7 +110,7 @@ function renderSidebar(active) {
     '<a href="planos.html" class="' + (active==='planos'?'active':'') + '">' + icons.planos + ' Planos</a>' +
     '</nav>' +
     '<div class="sidebar-bottom">' +
-    '<div style="font-size:12px;color:#a5d6a7;margin-bottom:8px">' + (emp.nome || (u && u.marmoraria) || '') + '</div>' +
+    '<div style="font-size:12px;color:#93c5fd;margin-bottom:8px">' + (emp.nome || (u && u.marmoraria) || '') + '</div>' +
     '<button class="btn-logout" onclick="logout()">Sair</button>' +
     '</div></aside>';
 }
@@ -135,7 +135,7 @@ function lightenColor(hex, pct) {
 
 function applyCompanyTheme() {
   const emp = getEmpresa();
-  const cor = emp.corPDF || '#1B5E20';
+  const cor = emp.corPDF || '#1E3A5F';
   const escuro = darkenColor(cor, 15);
   const claro  = lightenColor(cor, 88);
   const medio  = lightenColor(cor, 60);
@@ -192,10 +192,10 @@ function extractDominantColor(imgSrc, callback) {
       var parts = best.split(',');
       callback(rgbToHex(+parts[0], +parts[1], +parts[2]));
     } else {
-      callback('#1B5E20');
+      callback('#1E3A5F');
     }
   };
-  img.onerror = function() { callback('#1B5E20'); };
+  img.onerror = function() { callback('#1E3A5F'); };
   img.src = imgSrc;
 }
 

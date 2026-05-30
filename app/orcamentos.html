@@ -16,7 +16,7 @@
     </div>
     <div class="content">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-        <h3 style="color:#1B5E20;font-size:16px">Todos os Orçamentos</h3>
+        <h3 style="color:#1E3A5F;font-size:16px">Todos os Orçamentos</h3>
         <button class="btn-novo" onclick="location.href='novo-orcamento.html'">+ Novo Orçamento</button>
       </div>
 
@@ -79,7 +79,7 @@ function renderTabela() {
       '<td><strong>' + (o.cliente||'') + '</strong></td>' +
       '<td>' + (o.data||'') + '</td>' +
       '<td style="color:#666;font-size:12px">' + (o.material||'') + '</td>' +
-      '<td style="font-weight:700;color:#1B5E20">R$ ' + formatBRL(o.valor) + '</td>' +
+      '<td style="font-weight:700;color:#1E3A5F">R$ ' + formatBRL(o.valor) + '</td>' +
       '<td onclick="ciclarStatus(\'' + o.id + '\')" style="cursor:pointer" title="Clique para mudar o status">' + statusBadge(o.status) + '</td>' +
       '<td><div class="actions">' +
         '<button class="btn btn-sm btn-outline" onclick="location.href=\'novo-orcamento.html?id=' + o.id + '\'">Editar</button>' +
