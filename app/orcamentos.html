@@ -49,6 +49,7 @@
 <script src="js/pdf.js"></script>
 <script>
 requireAuth();
+applyCompanyTheme();
 seedDemoData();
 document.getElementById('sidebar').innerHTML = renderSidebar('orcamentos');
 const u = getUsuario();
@@ -111,8 +112,15 @@ function enviarWhats(id) {
   if (!orc) return;
   var emp = getEmpresa();
   var msg = emp.msgWhatsApp ||
-    'Olá, ' + (orc.cliente||'') + '! Segue seu orçamento N° ' + (orc.numero||'') + ' no valor de R$ ' + formatBRL(orc.valor) + '. Em caso de dúvidas, estamos à disposição!';
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    'Olá, ' + (orc.cliente||'') + '! Segue seu orçamento N° ' + (orc.numero||'') + ' no valor de R$ ' + formatBRL(orc.valor) + '. Em caso de dúvidas, estamos à disposição! 😊';
+  // Usa telefone do cliente se disponível para abrir direto no contato
+  var fone = (orc.telefonecliente||'').replace(/\D/g,'');
+  if (fone && fone.length >= 10) {
+    if (!fone.startsWith('55')) fone = '55' + fone;
+    window.open('https://wa.me/' + fone + '?text=' + encodeURIComponent(msg), '_blank');
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
 }
 
 function duplicar(id) {

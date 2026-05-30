@@ -103,6 +103,90 @@ function renderSidebar(active) {
     '</div></aside>';
 }
 
+// ── TEMA DINÂMICO POR LOGO ────────────────────────────────────────────
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  return { r: parseInt(hex.slice(0,2),16), g: parseInt(hex.slice(2,4),16), b: parseInt(hex.slice(4,6),16) };
+}
+function rgbToHex(r,g,b) {
+  return '#' + [r,g,b].map(v => Math.min(255,Math.max(0,Math.round(v))).toString(16).padStart(2,'0')).join('');
+}
+function darkenColor(hex, pct) {
+  const {r,g,b} = hexToRgb(hex);
+  return rgbToHex(r*(1-pct/100), g*(1-pct/100), b*(1-pct/100));
+}
+function lightenColor(hex, pct) {
+  const {r,g,b} = hexToRgb(hex);
+  return rgbToHex(r+(255-r)*pct/100, g+(255-g)*pct/100, b+(255-b)*pct/100);
+}
+
+function applyCompanyTheme() {
+  const emp = getEmpresa();
+  const cor = emp.corPDF || '#1B5E20';
+  const escuro = darkenColor(cor, 15);
+  const claro  = lightenColor(cor, 88);
+  const medio  = lightenColor(cor, 60);
+
+  var s = document.getElementById('_theme');
+  if (!s) { s = document.createElement('style'); s.id = '_theme'; document.head.appendChild(s); }
+  s.textContent =
+    '.sidebar{background:'+cor+'!important}' +
+    '.sidebar nav a:hover,.sidebar nav a.active{background:'+escuro+'!important}' +
+    '.sidebar-logo{color:#fff!important}' +
+    '.topbar h2,.card-title,.stat-card .stat-value,.ambiente-nome{color:'+cor+'!important}' +
+    '.stat-card{border-top-color:'+cor+'!important}' +
+    '.btn-primary,.btn-novo,.btn-submit{background:'+cor+'!important}' +
+    '.btn-primary:hover,.btn-novo:hover,.btn-submit:hover{background:'+escuro+'!important}' +
+    'thead tr{background:'+cor+'!important}' +
+    '.total-box{background:'+cor+'!important}' +
+    '.ambiente-nome{background:'+claro+'!important;border-color:'+medio+'!important}' +
+    '.btn-add-item{color:'+escuro+'!important;border-color:'+medio+'!important}' +
+    '.btn-add-item:hover{background:'+claro+'!important}' +
+    '.btn-add-ambiente{background:'+claro+'!important;border-color:'+medio+'!important;color:'+cor+'!important}' +
+    '.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:'+cor+'!important}' +
+    '.card-title{border-bottom-color:'+claro+'!important}' +
+    '.btn-logout{border-color:'+medio+'!important;color:'+medio+'!important}' +
+    '.plano-nome{color:'+cor+'!important}' +
+    '.plano-card.destaque{border-color:'+cor+'!important}';
+}
+
+function extractDominantColor(imgSrc, callback) {
+  var img = new Image();
+  img.crossOrigin = 'Anonymous';
+  img.onload = function() {
+    var canvas = document.createElement('canvas');
+    var size = 80;
+    canvas.width = size; canvas.height = size;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, size, size);
+    var data = ctx.getImageData(0, 0, size, size).data;
+    var counts = {};
+    for (var i = 0; i < data.length; i += 4) {
+      var r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+      if (a < 100) continue;
+      if (r > 230 && g > 230 && b > 230) continue;
+      if (r < 30 && g < 30 && b < 30) continue;
+      // Detecta se é muito cinza (sem saturação)
+      var max = Math.max(r,g,b), min = Math.min(r,g,b);
+      if (max - min < 30) continue;
+      var qr = Math.round(r/24)*24, qg = Math.round(g/24)*24, qb = Math.round(b/24)*24;
+      var k = qr+','+qg+','+qb;
+      counts[k] = (counts[k]||0) + 1;
+    }
+    var best = null, bestN = 0;
+    for (var k in counts) { if (counts[k] > bestN) { bestN = counts[k]; best = k; } }
+    if (best) {
+      var parts = best.split(',');
+      callback(rgbToHex(+parts[0], +parts[1], +parts[2]));
+    } else {
+      callback('#1B5E20');
+    }
+  };
+  img.onerror = function() { callback('#1B5E20'); };
+  img.src = imgSrc;
+}
+
 // ── SEED DE DADOS DEMO ────────────────────────────────────────────────
 function seedDemoData() {
   if (getCatalogo().length > 0) return; // ja tem dados

@@ -77,13 +77,17 @@
       <div class="card">
         <div class="card-title">Configurações do PDF</div>
         <div class="form-row">
-          <div class="form-group" style="max-width:240px">
-            <label>Cor dos PDFs</label>
+          <div class="form-group" style="max-width:320px">
+            <label>Cor dos PDFs e do sistema</label>
             <select id="conf-cor">
               <option value="#1B5E20">Verde Marmoraria (padrão)</option>
               <option value="#1A237E">Azul Profissional</option>
               <option value="#212121">Preto Elegante</option>
+              <option value="#B71C1C">Vermelho Premium</option>
+              <option value="#4A148C">Roxo Sofisticado</option>
             </select>
+            <div id="aviso-cor" style="display:none;margin-top:8px;font-size:12px;color:#2E7D32;font-weight:700;background:#E8F5E9;padding:6px 10px;border-radius:6px"></div>
+            <div style="font-size:11px;color:#aaa;margin-top:6px">💡 Faça upload do logo para extrair a cor automaticamente</div>
           </div>
         </div>
         <div class="form-group">
@@ -116,6 +120,7 @@
 <script src="js/core.js"></script>
 <script>
 requireAuth();
+applyCompanyTheme();
 document.getElementById('sidebar').innerHTML = renderSidebar('config');
 const u = getUsuario();
 const emp = getEmpresa();
@@ -145,9 +150,33 @@ function carregarLogo(input) {
   if (file.size > 2*1024*1024) { alert('Arquivo muito grande. Use imagens até 2 MB.'); return; }
   var reader = new FileReader();
   reader.onload = function(e) {
-    document.getElementById('logo-preview').src = e.target.result;
+    var src = e.target.result;
+    document.getElementById('logo-preview').src = src;
     document.getElementById('logo-preview').style.display = 'block';
     document.getElementById('logo-placeholder').style.display = 'none';
+
+    // Extrai cor dominante e aplica automaticamente
+    extractDominantColor(src, function(cor) {
+      document.getElementById('conf-cor').value = cor;
+      // Adiciona opção personalizada se não existir
+      var sel = document.getElementById('conf-cor');
+      var exists = Array.from(sel.options).some(function(o){ return o.value === cor; });
+      if (!exists) {
+        var opt = document.createElement('option');
+        opt.value = cor; opt.textContent = '🎨 Cor extraída do logo (' + cor + ')';
+        sel.insertBefore(opt, sel.firstChild);
+      }
+      sel.value = cor;
+      // Preview imediato da cor na sidebar
+      var emp = getEmpresa();
+      emp.corPDF = cor;
+      setEmpresa(emp);
+      applyCompanyTheme();
+
+      // Mostra aviso
+      var av = document.getElementById('aviso-cor');
+      if (av) { av.style.display = 'block'; av.textContent = '✅ Cor extraída do logo: ' + cor; }
+    });
   };
   reader.readAsDataURL(file);
 }
@@ -180,6 +209,7 @@ function salvarConfig() {
                    : ''
   });
 
+  applyCompanyTheme();
   var msg = document.getElementById('msg-save');
   msg.style.display = 'block';
   setTimeout(function() { msg.style.display = 'none'; }, 2500);

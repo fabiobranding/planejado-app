@@ -32,6 +32,10 @@
             <label>Cliente</label>
             <input type="text" id="cliente" placeholder="Nome do cliente">
           </div>
+          <div class="form-group" style="max-width:180px">
+            <label>WhatsApp do Cliente</label>
+            <input type="tel" id="telefonecliente" placeholder="(31) 99999-9999">
+          </div>
           <div class="form-group" style="max-width:140px">
             <label>Validade</label>
             <select id="validade">
@@ -101,6 +105,7 @@
 <script src="js/pdf.js"></script>
 <script>
 requireAuth();
+applyCompanyTheme();
 seedDemoData();
 document.getElementById('sidebar').innerHTML = renderSidebar('novo');
 const u = getUsuario();
@@ -122,6 +127,7 @@ if (editId) {
     document.getElementById('numero').value = orc.numero || '';
     document.getElementById('data').value = orc.data || hoje();
     document.getElementById('cliente').value = orc.cliente || '';
+    document.getElementById('telefonecliente').value = orc.telefonecliente || '';
     document.getElementById('material').value = orc.material || '';
     document.getElementById('valor').value = orc.valor ? formatBRL(orc.valor) : '';
     document.getElementById('total-display').textContent = 'R$ ' + (orc.valor ? formatBRL(orc.valor) : '0,00');
@@ -222,6 +228,7 @@ function getOrcamentoAtual() {
     id: orcId || gerarId(),
     numero: document.getElementById('numero').value,
     cliente: document.getElementById('cliente').value,
+    telefonecliente: document.getElementById('telefonecliente').value,
     data: document.getElementById('data').value,
     validade: document.getElementById('validade').value,
     status: document.getElementById('status').value,
@@ -248,10 +255,18 @@ function gerarPDFAtual() {
 
 function enviarWhatsApp() {
   var orc = getOrcamentoAtual();
+  if (!orc.cliente) { alert('Informe o nome do cliente antes de enviar.'); return; }
+  saveOrcamento(orc);
   var emp = getEmpresa();
   var msg = emp.msgWhatsApp ||
-    'Olá, ' + (orc.cliente||'') + '! Segue seu orçamento N° ' + (orc.numero||'') + ' no valor de R$ ' + formatBRL(orc.valor) + '. Em caso de dúvidas, estamos à disposição!';
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    'Olá, ' + (orc.cliente||'') + '! 👋\nSegue seu orçamento N° ' + (orc.numero||'') + ' no valor de *R$ ' + formatBRL(orc.valor) + '*.\nQualquer dúvida estou à disposição! 😊';
+  var fone = (orc.telefonecliente||'').replace(/\D/g,'');
+  if (fone && fone.length >= 10) {
+    if (!fone.startsWith('55')) fone = '55' + fone;
+    window.open('https://wa.me/' + fone + '?text=' + encodeURIComponent(msg), '_blank');
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
 }
 
 renderAmbientes();
