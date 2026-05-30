@@ -139,9 +139,12 @@ function renderSidebar(active) {
       ? baseStyle + 'background:#1A1A1A;color:#fff'
       : baseStyle + 'background:transparent;color:#999';
     var hoverAttr = isActive ? '' : 'onmouseover="this.style.background=\'#F0F0F0\'" onmouseout="this.style.background=\'transparent\'"';
-    return '<a href="'+page+'.html" title="'+label+'" style="display:block;padding:4px 0;text-decoration:none">'+
-      '<div style="'+style+'" '+hoverAttr+'>'+icon+'</div>'+
-    '</a>';
+    return '<div class="nav-item-wrap" style="padding:3px 0;position:relative">'+
+      '<a href="'+page+'.html" style="display:block;text-decoration:none">'+
+        '<div style="'+style+'" '+hoverAttr+'>'+icon+'</div>'+
+      '</a>'+
+      '<div class="nav-tooltip">'+label+'</div>'+
+    '</div>';
   }
 
   var S = 'width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
