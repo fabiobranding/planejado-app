@@ -1,6 +1,6 @@
 function gerarPDF(orc) {
   const emp = getEmpresa();
-  const cor = emp.corPDF || '#1B5E20';
+  const cor = emp.corPDF || '#1E3A5F';
   const corClara = '#E8F5E9';
   const logoHTML = emp.logo
     ? '<div style="width:74px;height:74px;border-radius:50%;border:3px solid #fff;overflow:hidden;flex-shrink:0;background:#fff">' +

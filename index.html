@@ -3,78 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OrçaMármore — Orçamentos profissionais para marmorarias</title>
+<title>marmo & cia — Orçamentos profissionais para marmorarias</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;color:#222;background:#fff}
 a{text-decoration:none;color:inherit}
 
 /* HEADER */
-header{background:#1B5E20;color:#fff;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+header{background:#1E3A5F;color:#fff;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .logo{font-size:22px;font-weight:900;color:#fff}
-.logo span{color:#4CAF50}
+.logo span{color:#355996}
 .header-btns{display:flex;gap:12px}
-.btn-entrar{border:1.5px solid #4CAF50;color:#4CAF50;background:none;padding:8px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
-.btn-entrar:hover{background:#4CAF50;color:#fff}
-.btn-comecar{background:#4CAF50;color:#fff;padding:8px 20px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.btn-entrar{border:1.5px solid #355996;color:#355996;background:none;padding:8px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-entrar:hover{background:#355996;color:#fff}
+.btn-comecar{background:#355996;color:#fff;padding:8px 20px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
 .btn-comecar:hover{background:#43A047}
 
 /* HERO */
-.hero{background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 60%,#388E3C 100%);color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 40px 80px}
+.hero{background:linear-gradient(135deg,#1E3A5F 0%,#2a4a7f 60%,#388E3C 100%);color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 40px 80px}
 .hero-inner{max-width:700px}
-.hero-badge{display:inline-block;background:rgba(76,175,80,.3);border:1px solid #4CAF50;color:#A5D6A7;padding:6px 18px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px}
+.hero-badge{display:inline-block;background:rgba(76,175,80,.3);border:1px solid #355996;color:#93c5fd;padding:6px 18px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px}
 .hero h1{font-size:46px;font-weight:900;line-height:1.15;margin-bottom:20px}
-.hero h1 span{color:#4CAF50}
-.hero p{font-size:18px;color:#C8E6C9;line-height:1.7;margin-bottom:36px;max-width:560px;margin-left:auto;margin-right:auto}
-.btn-hero{background:#4CAF50;color:#fff;padding:16px 40px;border-radius:10px;font-size:17px;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:inline-block;margin-bottom:14px}
+.hero h1 span{color:#355996}
+.hero p{font-size:18px;color:#bfdbfe;line-height:1.7;margin-bottom:36px;max-width:560px;margin-left:auto;margin-right:auto}
+.btn-hero{background:#355996;color:#fff;padding:16px 40px;border-radius:10px;font-size:17px;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:inline-block;margin-bottom:14px}
 .btn-hero:hover{background:#43A047;transform:translateY(-2px)}
-.hero-sub{font-size:12px;color:#A5D6A7}
+.hero-sub{font-size:12px;color:#93c5fd}
 
 /* BENEFICIOS */
 .beneficios{padding:80px 40px;background:#f4f6f4;text-align:center}
-.section-title{font-size:28px;font-weight:900;color:#1B5E20;margin-bottom:12px}
+.section-title{font-size:28px;font-weight:900;color:#1E3A5F;margin-bottom:12px}
 .section-sub{font-size:15px;color:#666;margin-bottom:48px}
 .beneficios-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:900px;margin:0 auto}
-.beneficio-card{background:#fff;border-radius:14px;padding:36px 28px;box-shadow:0 4px 16px rgba(27,94,32,.08);border-top:4px solid #1B5E20}
+.beneficio-card{background:#fff;border-radius:14px;padding:36px 28px;box-shadow:0 4px 16px rgba(27,94,32,.08);border-top:4px solid #1E3A5F}
 .beneficio-icon{font-size:42px;margin-bottom:16px}
-.beneficio-card h3{font-size:18px;font-weight:900;color:#1B5E20;margin-bottom:10px}
+.beneficio-card h3{font-size:18px;font-weight:900;color:#1E3A5F;margin-bottom:10px}
 .beneficio-card p{font-size:14px;color:#666;line-height:1.6}
 
 /* COMO FUNCIONA */
 .como{padding:80px 40px;text-align:center;background:#fff}
 .passos{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;max-width:860px;margin:0 auto;position:relative}
-.passos::before{content:'';position:absolute;top:36px;left:16%;right:16%;height:2px;background:#E8F5E9;z-index:0}
+.passos::before{content:'';position:absolute;top:36px;left:16%;right:16%;height:2px;background:#EEF2FF;z-index:0}
 .passo{position:relative;z-index:1}
-.passo-num{width:72px;height:72px;border-radius:50%;background:#1B5E20;color:#fff;font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 4px 14px rgba(27,94,32,.3)}
-.passo h3{font-size:17px;font-weight:900;color:#1B5E20;margin-bottom:8px}
+.passo-num{width:72px;height:72px;border-radius:50%;background:#1E3A5F;color:#fff;font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 4px 14px rgba(27,94,32,.3)}
+.passo h3{font-size:17px;font-weight:900;color:#1E3A5F;margin-bottom:8px}
 .passo p{font-size:14px;color:#666;line-height:1.6}
 
 /* PLANOS */
 .planos{padding:80px 40px;background:#f4f6f4;text-align:center}
 .planos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:960px;margin:48px auto 0}
 .plano{background:#fff;border-radius:14px;padding:36px 28px;box-shadow:0 4px 16px rgba(0,0,0,.07);border:2px solid #eee;position:relative}
-.plano.destaque{border-color:#1B5E20;transform:scale(1.04)}
-.plano-badge-destaque{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#1B5E20;color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;letter-spacing:1px}
-.plano-nome{font-size:20px;font-weight:900;color:#1B5E20;margin-bottom:8px}
+.plano.destaque{border-color:#1E3A5F;transform:scale(1.04)}
+.plano-badge-destaque{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#1E3A5F;color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;letter-spacing:1px}
+.plano-nome{font-size:20px;font-weight:900;color:#1E3A5F;margin-bottom:8px}
 .plano-preco{font-size:36px;font-weight:900;color:#222;margin:16px 0 4px}
 .plano-preco small{font-size:14px;color:#888;font-weight:400}
 .plano-periodo{font-size:12px;color:#aaa;margin-bottom:24px}
 .plano-features{list-style:none;text-align:left;margin-bottom:28px}
 .plano-features li{padding:8px 0;font-size:13px;color:#444;border-bottom:1px solid #f5f5f5;display:flex;gap:8px}
-.plano-features li .check{color:#2E7D32;font-weight:700}
+.plano-features li .check{color:#2a4a7f;font-weight:700}
 .plano-features li .x{color:#ccc}
 .plano-features li.off{color:#bbb}
 .btn-plano{width:100%;padding:13px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;border:none}
-.btn-plano-gratis{background:#E8F5E9;color:#1B5E20;border:1.5px solid #A5D6A7}
-.btn-plano-pago{background:#1B5E20;color:#fff}
-.btn-plano-pago:hover{background:#2E7D32}
+.btn-plano-gratis{background:#EEF2FF;color:#1E3A5F;border:1.5px solid #93c5fd}
+.btn-plano-pago{background:#1E3A5F;color:#fff}
+.btn-plano-pago:hover{background:#2a4a7f}
 
 /* RODAPE */
-footer{background:#1B5E20;color:#fff;padding:40px;text-align:center}
+footer{background:#1E3A5F;color:#fff;padding:40px;text-align:center}
 .footer-logo{font-size:24px;font-weight:900;margin-bottom:12px}
-.footer-logo span{color:#4CAF50}
+.footer-logo span{color:#355996}
 .footer-links{display:flex;justify-content:center;gap:28px;margin:16px 0;font-size:14px}
-.footer-links a{color:#A5D6A7;transition:color .2s}
+.footer-links a{color:#93c5fd;transition:color .2s}
 .footer-links a:hover{color:#fff}
 .footer-copy{font-size:12px;color:#81C784;margin-top:20px}
 
@@ -92,7 +92,7 @@ footer{background:#1B5E20;color:#fff;padding:40px;text-align:center}
 <body>
 
 <header>
-  <div class="logo">Orça<span>Mármore</span></div>
+  <div class="logo">marmo <span>& cia</span></div>
   <div class="header-btns">
     <button class="btn-entrar" onclick="location.href='login.html'">Entrar</button>
     <button class="btn-comecar" onclick="location.href='login.html'">Começar grátis</button>
@@ -211,8 +211,8 @@ footer{background:#1B5E20;color:#fff;padding:40px;text-align:center}
 </section>
 
 <footer>
-  <div class="footer-logo">Orça<span>Mármore</span></div>
-  <p style="color:#A5D6A7;font-size:14px;margin-bottom:12px">Software de orçamentos para marmorarias</p>
+  <div class="footer-logo">marmo <span>& cia</span></div>
+  <p style="color:#93c5fd;font-size:14px;margin-bottom:12px">Software de orçamentos para marmorarias</p>
   <div class="footer-links">
     <a href="#">Sobre</a>
     <a href="#">Planos</a>
@@ -220,7 +220,7 @@ footer{background:#1B5E20;color:#fff;padding:40px;text-align:center}
     <a href="#">Privacidade</a>
     <a href="#">Termos</a>
   </div>
-  <div class="footer-copy">&copy; 2026 OrçaMármore. Todos os direitos reservados.</div>
+  <div class="footer-copy">&copy; 2026 marmo & cia. Todos os direitos reservados.</div>
 </footer>
 
 </body>
