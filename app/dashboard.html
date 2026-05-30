@@ -5,6 +5,33 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard — OrçaMármore</title>
 <link rel="stylesheet" href="css/style.css">
+<style>
+.stats-row { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
+.stat-card-fin {
+  flex:1; min-width:160px; background:#fff; border-radius:12px;
+  padding:18px 20px; box-shadow:0 1px 4px rgba(0,0,0,.08);
+  border-top:3px solid #1E3A5F;
+}
+.stat-card-fin .stat-label { font-size:11px; color:#666; font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+.stat-card-fin .stat-value { font-size:22px; font-weight:800; color:#1E3A5F; }
+.stat-card-fin.green { border-top-color:#16a34a; }
+.stat-card-fin.green .stat-value { color:#16a34a; }
+.stat-card-fin.orange { border-top-color:#d97706; }
+.stat-card-fin.orange .stat-value { color:#d97706; }
+.stat-card-fin.gray { border-top-color:#6b7280; }
+.stat-card-fin.gray .stat-value { color:#6b7280; }
+.pgto-cards { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+.pgto-card {
+  flex:1; min-width:110px; background:#EEF2FF; border-radius:10px;
+  padding:12px 14px; text-align:center;
+}
+.pgto-card .pgto-icon { font-size:18px; margin-bottom:4px; }
+.pgto-card .pgto-label { font-size:11px; color:#555; font-weight:600; }
+.pgto-card .pgto-val { font-size:14px; font-weight:800; color:#1E3A5F; margin-top:2px; }
+.badge-pago { background:#dcfce7; color:#166534; padding:3px 8px; border-radius:20px; font-size:11px; font-weight:700; }
+.badge-parcial { background:#fef9c3; color:#854d0e; padding:3px 8px; border-radius:20px; font-size:11px; font-weight:700; }
+.badge-pendente { background:#fee2e2; color:#991b1b; padding:3px 8px; border-radius:20px; font-size:11px; font-weight:700; }
+</style>
 </head>
 <body>
 <div class="app-layout">
@@ -15,22 +42,34 @@
       <div class="user-info" id="user-name"></div>
     </div>
     <div class="content">
+
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-        <h3 style="color:#1E3A5F;font-size:16px">Visão Geral</h3>
+        <h3 style="color:#1E3A5F;font-size:16px">Visão Geral — <span id="mes-label"></span></h3>
         <button class="btn-novo" onclick="location.href='novo-orcamento.html'">+ Novo Orçamento</button>
       </div>
-      <div class="stats-grid" id="stats"></div>
+
+      <!-- Stats row 1: métricas principais -->
+      <div class="stats-row" id="stats-main"></div>
+
+      <!-- Stats row 2: breakdown por forma de pagamento -->
+      <div class="pgto-cards" id="stats-pgto"></div>
+
+      <!-- Tabela financeira rápida -->
       <div class="card">
-        <div class="card-title">Últimos Orçamentos</div>
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+          Financeiro — Últimos Orçamentos
+          <a href="financeiro.html" style="font-size:12px;color:#1E3A5F;font-weight:600">Ver todos →</a>
+        </div>
         <div class="table-wrap">
           <table>
             <thead><tr>
-              <th>N°</th><th>Cliente</th><th>Data</th><th>Valor</th><th>Status</th><th>Ações</th>
+              <th>N°</th><th>Cliente</th><th>Valor Total</th><th>Valor Pago</th><th>Restante</th><th>Forma Pgto</th><th>Status Pgto</th><th>Ações</th>
             </tr></thead>
             <tbody id="tbody"></tbody>
           </table>
         </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -41,48 +80,88 @@ requireAuth();
 applyCompanyTheme();
 seedDemoData();
 document.getElementById('sidebar').innerHTML = renderSidebar('dashboard');
-const u = getUsuario();
-const emp = getEmpresa();
+var u = getUsuario();
+var emp = getEmpresa();
 document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || (u && u.nome) || '';
 
-const orcs = getOrcamentos();
-const mes = new Date().getMonth();
-const ano = new Date().getFullYear();
-const doMes = orcs.filter(function(o) {
-  var partes = (o.data || '').split('/');
-  if (partes.length < 3) return false;
-  return parseInt(partes[1])-1 === mes && parseInt(partes[2]) === ano;
+var orcs = getOrcamentos();
+var now = new Date();
+var mes = now.getMonth();
+var ano = now.getFullYear();
+var nomeMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+document.getElementById('mes-label').textContent = nomeMeses[mes] + ' ' + ano;
+
+var doMes = orcs.filter(function(o) {
+  var p = (o.data || '').split('/');
+  if (p.length < 3) return false;
+  return parseInt(p[1])-1 === mes && parseInt(p[2]) === ano;
 });
-const totalMes = doMes.reduce(function(s, o) { return s + (Number(o.valor) || 0); }, 0);
-const aprovados = doMes.filter(function(o) { return o.status === 'Aprovado'; }).length;
-const taxa = doMes.length ? Math.round(aprovados / doMes.length * 100) : 0;
-const aguardando = orcs.filter(function(o) { return o.status === 'Em aberto'; }).length;
 
-document.getElementById('stats').innerHTML =
-  '<div class="stat-card"><div class="stat-label">Total Orçado (mês)</div><div class="stat-value">R$ ' + formatBRL(totalMes) + '</div></div>' +
-  '<div class="stat-card"><div class="stat-label">Aprovados (mês)</div><div class="stat-value">' + aprovados + '</div></div>' +
-  '<div class="stat-card"><div class="stat-label">Taxa de Aprovação</div><div class="stat-value">' + taxa + '%</div></div>' +
-  '<div class="stat-card"><div class="stat-label">Aguardando Resposta</div><div class="stat-value">' + aguardando + '</div></div>';
+var totalOrcado = doMes.reduce(function(s,o){ return s + (Number(o.valor)||0); }, 0);
+var totalRecebido = doMes.reduce(function(s,o){ return s + (Number(o.valor_pago)||0); }, 0);
+var totalPendente = doMes.reduce(function(s,o){
+  var vp = Number(o.valor_pago)||0;
+  var vt = Number(o.valor)||0;
+  return s + (vp < vt ? vt - vp : 0);
+}, 0);
 
-const ultimos = orcs.slice(0, 5);
+document.getElementById('stats-main').innerHTML =
+  '<div class="stat-card-fin"><div class="stat-label">Total Orçado (mês)</div><div class="stat-value">R$ ' + formatBRL(totalOrcado) + '</div></div>' +
+  '<div class="stat-card-fin green"><div class="stat-label">Total Recebido (mês)</div><div class="stat-value">R$ ' + formatBRL(totalRecebido) + '</div></div>' +
+  '<div class="stat-card-fin orange"><div class="stat-label">A Receber</div><div class="stat-value">R$ ' + formatBRL(totalPendente) + '</div></div>' +
+  '<div class="stat-card-fin gray"><div class="stat-label">Orçamentos do mês</div><div class="stat-value">' + doMes.length + '</div></div>';
+
+function somaForma(forma) {
+  return doMes.filter(function(o){ return (o.forma_pagamento||'') === forma; })
+    .reduce(function(s,o){ return s + (Number(o.valor_pago)||0); }, 0);
+}
+var totalPix = somaForma('Pix');
+var totalCredito = somaForma('Crédito');
+var totalDebito = somaForma('Débito');
+var totalDinheiro = somaForma('Dinheiro');
+var totalOutros = doMes
+  .filter(function(o){ return o.forma_pagamento === 'Transferência' || o.forma_pagamento === 'Parcelado'; })
+  .reduce(function(s,o){ return s + (Number(o.valor_pago)||0); }, 0);
+
+document.getElementById('stats-pgto').innerHTML =
+  '<div class="pgto-card"><div class="pgto-icon">💙</div><div class="pgto-label">Pix</div><div class="pgto-val">R$ ' + formatBRL(totalPix) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon">💳</div><div class="pgto-label">Crédito</div><div class="pgto-val">R$ ' + formatBRL(totalCredito) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon">🏦</div><div class="pgto-label">Débito</div><div class="pgto-val">R$ ' + formatBRL(totalDebito) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon">💵</div><div class="pgto-label">Dinheiro</div><div class="pgto-val">R$ ' + formatBRL(totalDinheiro) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon">📦</div><div class="pgto-label">Outros</div><div class="pgto-val">R$ ' + formatBRL(totalOutros) + '</div></div>';
+
+function statusPgtoBadge(orc) {
+  var vp = Number(orc.valor_pago) || 0;
+  var vt = Number(orc.valor) || 0;
+  if (vp >= vt && vt > 0) return '<span class="badge-pago">Pago</span>';
+  if (vp > 0 && vp < vt) return '<span class="badge-parcial">Parcial</span>';
+  return '<span class="badge-pendente">Pendente</span>';
+}
+
+var ultimos = orcs.slice(0, 8);
 document.getElementById('tbody').innerHTML = ultimos.length
   ? ultimos.map(function(o) {
+      var vt = Number(o.valor) || 0;
+      var vp = Number(o.valor_pago) || 0;
+      var rest = vt - vp > 0 ? vt - vp : 0;
       return '<tr>' +
         '<td>' + (o.numero||'') + '</td>' +
         '<td><strong>' + (o.cliente||'') + '</strong></td>' +
-        '<td>' + (o.data||'') + '</td>' +
-        '<td>R$ ' + formatBRL(o.valor) + '</td>' +
-        '<td>' + statusBadge(o.status) + '</td>' +
+        '<td>R$ ' + formatBRL(vt) + '</td>' +
+        '<td>R$ ' + formatBRL(vp) + '</td>' +
+        '<td>R$ ' + formatBRL(rest) + '</td>' +
+        '<td>' + (o.forma_pagamento || '—') + '</td>' +
+        '<td>' + statusPgtoBadge(o) + '</td>' +
         '<td><div class="actions">' +
           '<button class="btn btn-sm btn-outline" onclick="location.href=\'novo-orcamento.html?id=' + o.id + '\'">Editar</button>' +
           '<button class="btn btn-sm btn-primary" onclick="verPDF(\'' + o.id + '\')">PDF</button>' +
         '</div></td>' +
       '</tr>';
     }).join('')
-  : '<tr><td colspan="6" style="text-align:center;padding:32px;color:#aaa">Nenhum orçamento ainda. Crie o primeiro!</td></tr>';
+  : '<tr><td colspan="8" style="text-align:center;padding:32px;color:#aaa">Nenhum orçamento ainda. Crie o primeiro!</td></tr>';
 
 function verPDF(id) {
-  var orc = getOrcamentos().find(function(o) { return o.id === id; });
+  var orc = getOrcamentos().find(function(o){ return o.id === id; });
   if (orc) gerarPDF(orc);
 }
 </script>

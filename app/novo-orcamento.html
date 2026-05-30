@@ -86,6 +86,34 @@
         </div>
       </div>
 
+      <!-- Pagamento -->
+      <div class="card">
+        <div class="card-title">Pagamento</div>
+        <div class="form-row">
+          <div class="form-group" style="max-width:200px">
+            <label>Valor Pago (R$)</label>
+            <input type="text" id="valor-pago" placeholder="0,00" oninput="formatarValorPagoInput(this)">
+          </div>
+          <div class="form-group" style="max-width:200px">
+            <label>Forma de Pagamento</label>
+            <select id="forma-pagamento">
+              <option value="">Selecione...</option>
+              <option>Pix</option>
+              <option>Débito</option>
+              <option>Crédito</option>
+              <option>Dinheiro</option>
+              <option>Transferência</option>
+              <option>Parcelado</option>
+            </select>
+          </div>
+          <div class="form-group" style="max-width:180px">
+            <label>Data do Pagamento</label>
+            <input type="text" id="data-pagamento" placeholder="dd/mm/aaaa">
+          </div>
+        </div>
+        <div id="status-pagamento-box" style="display:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;margin-top:8px"></div>
+      </div>
+
       <!-- Ações -->
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <button class="btn btn-primary" onclick="salvar()">💾 Salvar Orçamento</button>
@@ -140,6 +168,10 @@ if (editId) {
       if (stSelect.options[i].text === orc.status) { stSelect.selectedIndex=i; break; }
     }
     ambientes = JSON.parse(JSON.stringify(orc.ambientes || []));
+    document.getElementById('valor-pago').value = orc.valor_pago ? formatBRL(orc.valor_pago) : '';
+    document.getElementById('forma-pagamento').value = orc.forma_pagamento || '';
+    document.getElementById('data-pagamento').value = orc.data_pagamento || '';
+    atualizarStatusPagamento();
   }
 } else {
   document.getElementById('numero').value = proximoNumero();
@@ -211,12 +243,36 @@ function removeAmbiente(ai) {
   renderAmbientes();
 }
 
+function formatarValorPagoInput(el) {
+  var v = el.value.replace(/\D/g, '');
+  if (!v) { el.value = ''; atualizarStatusPagamento(); return; }
+  var num = parseInt(v, 10) / 100;
+  el.value = formatBRL(num);
+  atualizarStatusPagamento();
+}
+
+function atualizarStatusPagamento() {
+  var box = document.getElementById('status-pagamento-box');
+  var vTotal = getValor();
+  var vPago = parseBRL(document.getElementById('valor-pago').value) || 0;
+  if (!vTotal) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  if (vPago >= vTotal) {
+    box.style.background = '#dcfce7'; box.style.color = '#166534'; box.textContent = 'Pago';
+  } else if (vPago > 0) {
+    box.style.background = '#fef9c3'; box.style.color = '#854d0e'; box.textContent = 'Parcial — Restante: R$ ' + formatBRL(vTotal - vPago);
+  } else {
+    box.style.background = '#fee2e2'; box.style.color = '#991b1b'; box.textContent = 'Pendente';
+  }
+}
+
 function formatarValorInput(el) {
   var v = el.value.replace(/\D/g, '');
-  if (!v) { el.value = ''; document.getElementById('total-display').textContent = 'R$ 0,00'; return; }
+  if (!v) { el.value = ''; document.getElementById('total-display').textContent = 'R$ 0,00'; atualizarStatusPagamento(); return; }
   var num = parseInt(v, 10) / 100;
   el.value = formatBRL(num);
   document.getElementById('total-display').textContent = 'R$ ' + formatBRL(num);
+  atualizarStatusPagamento();
 }
 
 function getValor() {
@@ -234,6 +290,9 @@ function getOrcamentoAtual() {
     status: document.getElementById('status').value,
     material: document.getElementById('material').value,
     valor: getValor(),
+    valor_pago: parseBRL(document.getElementById('valor-pago').value) || 0,
+    forma_pagamento: document.getElementById('forma-pagamento').value,
+    data_pagamento: document.getElementById('data-pagamento').value,
     ambientes: JSON.parse(JSON.stringify(ambientes))
   };
 }

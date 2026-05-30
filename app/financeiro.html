@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Financeiro — OrçaMármore</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.filtros-bar { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; align-items:flex-end; }
+.filtros-bar select, .filtros-bar input { padding:8px 12px; border:1px solid #dde1ea; border-radius:8px; font-size:13px; background:#fff; }
+.filtros-bar select:focus, .filtros-bar input:focus { outline:none; border-color:#1E3A5F; }
+.resumo-cards { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+.resumo-card {
+  flex:1; min-width:150px; background:#fff; border-radius:12px;
+  padding:16px 20px; box-shadow:0 1px 4px rgba(0,0,0,.08);
+  border-top:3px solid #1E3A5F;
+}
+.resumo-card.green { border-top-color:#16a34a; }
+.resumo-card.orange { border-top-color:#d97706; }
+.resumo-card.teal { border-top-color:#0891b2; }
+.resumo-card .r-label { font-size:11px; color:#666; font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; }
+.resumo-card .r-value { font-size:20px; font-weight:800; color:#1E3A5F; }
+.resumo-card.green .r-value { color:#16a34a; }
+.resumo-card.orange .r-value { color:#d97706; }
+.resumo-card.teal .r-value { color:#0891b2; }
+.badge-pago { background:#dcfce7; color:#166534; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
+.badge-parcial { background:#fef9c3; color:#854d0e; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
+.badge-pendente { background:#fee2e2; color:#991b1b; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
+tr.row-pago { background:#f0fdf4; }
+tr.row-parcial { background:#fefce8; }
+tr.row-pendente { background:#fef2f2; }
+.tfoot-total td { font-weight:800; color:#1E3A5F; border-top:2px solid #1E3A5F; background:#EEF2FF; }
+/* Modal */
+.modal-overlay {
+  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,.45); z-index:1000; justify-content:center; align-items:center;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:#fff; border-radius:14px; padding:28px 32px; width:360px;
+  box-shadow:0 8px 32px rgba(0,0,0,.18);
+}
+.modal-box h3 { color:#1E3A5F; margin-bottom:18px; font-size:16px; }
+.modal-box .form-group { margin-bottom:14px; }
+.modal-box label { display:block; font-size:12px; font-weight:600; color:#444; margin-bottom:5px; }
+.modal-box input, .modal-box select {
+  width:100%; padding:9px 12px; border:1px solid #dde1ea; border-radius:8px;
+  font-size:14px; box-sizing:border-box;
+}
+.modal-box input:focus, .modal-box select:focus { outline:none; border-color:#1E3A5F; }
+.modal-actions { display:flex; gap:10px; margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="app-layout">
+  <div id="sidebar"></div>
+  <div class="main">
+    <div class="topbar">
+      <h2>Financeiro</h2>
+      <div class="user-info" id="user-name"></div>
+    </div>
+    <div class="content">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h3 style="color:#1E3A5F;font-size:15px">Controle de Recebimentos</h3>
+        <button class="btn-novo" onclick="location.href='novo-orcamento.html'">+ Novo Orçamento</button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros-bar">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Mês</div>
+          <select id="filtro-mes" onchange="renderTabela()">
+            <option value="">Todos</option>
+            <option value="0">Janeiro</option>
+            <option value="1">Fevereiro</option>
+            <option value="2">Março</option>
+            <option value="3">Abril</option>
+            <option value="4">Maio</option>
+            <option value="5">Junho</option>
+            <option value="6">Julho</option>
+            <option value="7">Agosto</option>
+            <option value="8">Setembro</option>
+            <option value="9">Outubro</option>
+            <option value="10">Novembro</option>
+            <option value="11">Dezembro</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Ano</div>
+          <select id="filtro-ano" onchange="renderTabela()"></select>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Forma de Pagamento</div>
+          <select id="filtro-forma" onchange="renderTabela()">
+            <option value="">Todas</option>
+            <option>Pix</option>
+            <option>Débito</option>
+            <option>Crédito</option>
+            <option>Dinheiro</option>
+            <option>Transferência</option>
+            <option>Parcelado</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Buscar cliente</div>
+          <input type="text" id="filtro-cliente" placeholder="Nome do cliente..." oninput="renderTabela()" style="min-width:200px">
+        </div>
+      </div>
+
+      <!-- Cards de resumo -->
+      <div class="resumo-cards" id="resumo-cards"></div>
+
+      <!-- Tabela -->
+      <div class="card">
+        <div class="card-title">Orçamentos</div>
+        <div class="table-wrap">
+          <table id="tabela-fin">
+            <thead><tr>
+              <th>N°</th>
+              <th>Cliente</th>
+              <th>Valor Total</th>
+              <th>Valor Pago</th>
+              <th>Restante</th>
+              <th>Data Pgto</th>
+              <th>Forma Pgto</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr></thead>
+            <tbody id="tbody-fin"></tbody>
+            <tfoot id="tfoot-fin"></tfoot>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal edição de pagamento -->
+<div class="modal-overlay" id="modal-pgto">
+  <div class="modal-box">
+    <h3>Atualizar Pagamento</h3>
+    <input type="hidden" id="modal-orc-id">
+    <div class="form-group">
+      <label>Valor Pago (R$)</label>
+      <input type="text" id="modal-valor-pago" placeholder="0,00" oninput="formatModalValor(this)">
+    </div>
+    <div class="form-group">
+      <label>Forma de Pagamento</label>
+      <select id="modal-forma">
+        <option value="">Selecione...</option>
+        <option>Pix</option>
+        <option>Débito</option>
+        <option>Crédito</option>
+        <option>Dinheiro</option>
+        <option>Transferência</option>
+        <option>Parcelado</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Data do Pagamento</label>
+      <input type="text" id="modal-data" placeholder="dd/mm/aaaa">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="salvarPagamento()">Salvar</button>
+      <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/pdf.js"></script>
+<script>
+requireAuth();
+applyCompanyTheme();
+seedDemoData();
+document.getElementById('sidebar').innerHTML = renderSidebar('financeiro');
+var u = getUsuario();
+var emp = getEmpresa();
+document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || (u && u.nome) || '';
+
+// Preencher select de anos
+(function() {
+  var anos = new Set();
+  var now = new Date();
+  var anoAtual = now.getFullYear();
+  anos.add(anoAtual);
+  getOrcamentos().forEach(function(o) {
+    var p = (o.data||'').split('/');
+    if (p.length >= 3) anos.add(parseInt(p[2]));
+  });
+  var sel = document.getElementById('filtro-ano');
+  Array.from(anos).sort(function(a,b){return b-a;}).forEach(function(a) {
+    var opt = document.createElement('option');
+    opt.value = a; opt.textContent = a;
+    if (a === anoAtual) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  // Default: mês atual
+  document.getElementById('filtro-mes').value = String(now.getMonth());
+})();
+
+function filtrarOrcamentos() {
+  var orcs = getOrcamentos();
+  var mes = document.getElementById('filtro-mes').value;
+  var ano = document.getElementById('filtro-ano').value;
+  var forma = document.getElementById('filtro-forma').value.toLowerCase();
+  var cliente = document.getElementById('filtro-cliente').value.toLowerCase();
+
+  return orcs.filter(function(o) {
+    var p = (o.data||'').split('/');
+    if (mes !== '') {
+      if (p.length < 3 || parseInt(p[1])-1 !== parseInt(mes)) return false;
+    }
+    if (ano !== '') {
+      if (p.length < 3 || parseInt(p[2]) !== parseInt(ano)) return false;
+    }
+    if (forma && (o.forma_pagamento||'').toLowerCase() !== forma) return false;
+    if (cliente && !(o.cliente||'').toLowerCase().includes(cliente)) return false;
+    return true;
+  });
+}
+
+function statusPgtoBadge(orc) {
+  var vp = Number(orc.valor_pago) || 0;
+  var vt = Number(orc.valor) || 0;
+  if (vp >= vt && vt > 0) return '<span class="badge-pago">Pago</span>';
+  if (vp > 0 && vp < vt) return '<span class="badge-parcial">Parcial</span>';
+  return '<span class="badge-pendente">Pendente</span>';
+}
+
+function rowClass(orc) {
+  var vp = Number(orc.valor_pago) || 0;
+  var vt = Number(orc.valor) || 0;
+  if (vp >= vt && vt > 0) return 'row-pago';
+  if (vp > 0 && vp < vt) return 'row-parcial';
+  return 'row-pendente';
+}
+
+function formatModalValor(el) {
+  var v = el.value.replace(/\D/g, '');
+  if (!v) { el.value = ''; return; }
+  el.value = formatBRL(parseInt(v, 10) / 100);
+}
+
+function abrirModal(id) {
+  var orc = getOrcamentos().find(function(o){ return o.id === id; });
+  if (!orc) return;
+  document.getElementById('modal-orc-id').value = id;
+  document.getElementById('modal-valor-pago').value = orc.valor_pago ? formatBRL(orc.valor_pago) : '';
+  document.getElementById('modal-forma').value = orc.forma_pagamento || '';
+  document.getElementById('modal-data').value = orc.data_pagamento || '';
+  document.getElementById('modal-pgto').classList.add('open');
+}
+
+function fecharModal() {
+  document.getElementById('modal-pgto').classList.remove('open');
+}
+
+function salvarPagamento() {
+  var id = document.getElementById('modal-orc-id').value;
+  var orcs = getOrcamentos();
+  var orc = orcs.find(function(o){ return o.id === id; });
+  if (!orc) return;
+  orc.valor_pago = parseBRL(document.getElementById('modal-valor-pago').value) || 0;
+  orc.forma_pagamento = document.getElementById('modal-forma').value;
+  orc.data_pagamento = document.getElementById('modal-data').value;
+  saveOrcamento(orc);
+  fecharModal();
+  renderTabela();
+}
+
+function verPDF(id) {
+  var orc = getOrcamentos().find(function(o){ return o.id === id; });
+  if (orc) gerarPDF(orc);
+}
+
+// Fechar modal clicando fora
+document.getElementById('modal-pgto').addEventListener('click', function(e) {
+  if (e.target === this) fecharModal();
+});
+
+function renderTabela() {
+  var lista = filtrarOrcamentos();
+
+  // Calcular resumo
+  var totOrcado = lista.reduce(function(s,o){ return s + (Number(o.valor)||0); }, 0);
+  var totPago = lista.reduce(function(s,o){ return s + (Number(o.valor_pago)||0); }, 0);
+  var totPend = lista.reduce(function(s,o){
+    var vp = Number(o.valor_pago)||0; var vt = Number(o.valor)||0;
+    return s + (vp < vt ? vt - vp : 0);
+  }, 0);
+  var pct = totOrcado > 0 ? Math.round(totPago / totOrcado * 100) : 0;
+
+  document.getElementById('resumo-cards').innerHTML =
+    '<div class="resumo-card"><div class="r-label">Total Orçado</div><div class="r-value">R$ ' + formatBRL(totOrcado) + '</div></div>' +
+    '<div class="resumo-card green"><div class="r-label">Total Pago</div><div class="r-value">R$ ' + formatBRL(totPago) + '</div></div>' +
+    '<div class="resumo-card orange"><div class="r-label">Total Pendente</div><div class="r-value">R$ ' + formatBRL(totPend) + '</div></div>' +
+    '<div class="resumo-card teal"><div class="r-label">% Recebimento</div><div class="r-value">' + pct + '%</div></div>';
+
+  // Tabela
+  var tbody = document.getElementById('tbody-fin');
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:#aaa">Nenhum orçamento encontrado para os filtros selecionados.</td></tr>';
+    document.getElementById('tfoot-fin').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = lista.map(function(o) {
+    var vt = Number(o.valor) || 0;
+    var vp = Number(o.valor_pago) || 0;
+    var rest = vt - vp > 0 ? vt - vp : 0;
+    return '<tr class="' + rowClass(o) + '">' +
+      '<td><strong style="color:#1E3A5F">' + (o.numero||'') + '</strong></td>' +
+      '<td>' + (o.cliente||'') + '</td>' +
+      '<td>R$ ' + formatBRL(vt) + '</td>' +
+      '<td>R$ ' + formatBRL(vp) + '</td>' +
+      '<td>R$ ' + formatBRL(rest) + '</td>' +
+      '<td>' + (o.data_pagamento || '—') + '</td>' +
+      '<td>' + (o.forma_pagamento || '—') + '</td>' +
+      '<td>' + statusPgtoBadge(o) + '</td>' +
+      '<td><div class="actions">' +
+        '<button class="btn btn-sm btn-outline" onclick="abrirModal(\'' + o.id + '\')">Editar pgto</button>' +
+        '<button class="btn btn-sm btn-primary" onclick="verPDF(\'' + o.id + '\')">PDF</button>' +
+      '</div></td>' +
+      '</tr>';
+  }).join('');
+
+  // Rodapé totais
+  document.getElementById('tfoot-fin').innerHTML =
+    '<tr class="tfoot-total">' +
+      '<td colspan="2">TOTAL (' + lista.length + ' orçamentos)</td>' +
+      '<td>R$ ' + formatBRL(totOrcado) + '</td>' +
+      '<td>R$ ' + formatBRL(totPago) + '</td>' +
+      '<td>R$ ' + formatBRL(totPend) + '</td>' +
+      '<td colspan="4"></td>' +
+    '</tr>';
+}
+
+renderTabela();
+</script>
+</body>
+</html>

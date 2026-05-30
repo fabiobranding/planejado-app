@@ -94,7 +94,8 @@ function renderSidebar(active) {
     novo:      '<svg xmlns="http://www.w3.org/2000/svg" '+S+'><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
     catalogo:  '<svg xmlns="http://www.w3.org/2000/svg" '+S+'><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
     config:    '<svg xmlns="http://www.w3.org/2000/svg" '+S+'><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
-    planos:    '<svg xmlns="http://www.w3.org/2000/svg" '+S+'><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+    planos:    '<svg xmlns="http://www.w3.org/2000/svg" '+S+'><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    financeiro:'<svg xmlns="http://www.w3.org/2000/svg" '+S+'><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'
   };
   var logoImg = emp.logo
     ? '<img src="'+emp.logo+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.4);flex-shrink:0">'
@@ -104,6 +105,7 @@ function renderSidebar(active) {
     '<nav>' +
     '<a href="dashboard.html" class="' + (active==='dashboard'?'active':'') + '">' + icons.dashboard + ' Dashboard</a>' +
     '<a href="orcamentos.html" class="' + (active==='orcamentos'?'active':'') + '">' + icons.orcamentos + ' Orçamentos</a>' +
+    '<a href="financeiro.html" class="' + (active==='financeiro'?'active':'') + '">' + icons.financeiro + ' Financeiro</a>' +
     '<a href="novo-orcamento.html" class="' + (active==='novo'?'active':'') + '">' + icons.novo + ' Novo Orçamento</a>' +
     '<a href="catalogo.html" class="' + (active==='catalogo'?'active':'') + '">' + icons.catalogo + ' Catálogo</a>' +
     '<a href="configuracoes.html" class="' + (active==='config'?'active':'') + '">' + icons.config + ' Configurações</a>' +
@@ -218,6 +220,7 @@ function seedDemoData() {
   const orc1 = {
     id: gerarId(), numero: ano+'/0001', cliente: 'Maria Silva', data: '15/05/'+ano,
     validade: '15 dias', material: 'Mármore Champagne', valor: 8500, status: 'Aprovado',
+    valor_pago: 8500, forma_pagamento: 'Pix', data_pagamento: '15/05/2026',
     ambientes: [
       { nome: 'Suíte Master', itens: [
         { desc: 'Nicho embutido', dim: '89 x 36 cm', qtd: '2 unidades', obs: '' },
@@ -232,6 +235,7 @@ function seedDemoData() {
   const orc2 = {
     id: gerarId(), numero: ano+'/0002', cliente: 'João Pereira', data: '18/05/'+ano,
     validade: '15 dias', material: 'Granito Preto São Gabriel', valor: 3200, status: 'Em aberto',
+    valor_pago: 1600, forma_pagamento: 'Débito', data_pagamento: '18/05/2026',
     ambientes: [
       { nome: 'Cozinha', itens: [
         { desc: 'Bancada', dim: '2,40 x 0,60 m', qtd: '1 unidade', obs: 'Com cuba embutida' },
@@ -242,6 +246,7 @@ function seedDemoData() {
   const orc3 = {
     id: gerarId(), numero: ano+'/0003', cliente: 'Ana Rodrigues', data: '22/05/'+ano,
     validade: '30 dias', material: 'Quartzo Branco Polar', valor: 12800, status: 'Em produção',
+    valor_pago: 0, forma_pagamento: '', data_pagamento: '',
     ambientes: [
       { nome: 'Cozinha Gourmet', itens: [
         { desc: 'Bancada', dim: '3,60 x 0,70 m', qtd: '1 unidade', obs: 'Ilha central' },
