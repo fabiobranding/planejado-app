@@ -533,7 +533,7 @@
 <!-- HERO com vídeo -->
 <section class="hero">
   <video autoplay muted loop playsinline preload="auto">
-    <source src="https://github.com/fabiobranding/planejado-app/releases/download/v1.0-assets/video1.mp4" type="video/mp4">
+    <source src="video1.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
   <div class="hero-content">
@@ -664,6 +664,15 @@
 </footer>
 
 <script>
+  // Vídeo mais lento
+  var vid = document.querySelector('.hero video');
+  if (vid) {
+    vid.addEventListener('loadeddata', function() {
+      vid.playbackRate = 0.55;
+    });
+    vid.playbackRate = 0.55;
+  }
+
   // Nav scroll effect
   var nav = document.getElementById('nav');
   window.addEventListener('scroll', function() {
