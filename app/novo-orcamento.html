@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Novo Orçamento — OrçaMármore</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme-glass.css">
 </head>
 <body>
 <div class="app-layout">
@@ -134,9 +135,11 @@
 <script src="js/pdf.js"></script>
 <script>
 requireAuth();
+applyStoredTheme();
 applyCompanyTheme();
 seedDemoData();
 document.getElementById('sidebar').innerHTML = renderSidebar('novo');
+renderThemeToggle();
 const u = getUsuario();
 const emp = getEmpresa();
 document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || '';

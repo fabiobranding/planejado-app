@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Configurações — OrçaMármore</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme-glass.css">
 </head>
 <body>
 <div class="app-layout">
@@ -120,8 +121,10 @@
 <script src="js/core.js"></script>
 <script>
 requireAuth();
+applyStoredTheme();
 applyCompanyTheme();
 document.getElementById('sidebar').innerHTML = renderSidebar('config');
+renderThemeToggle();
 const u = getUsuario();
 const emp = getEmpresa();
 document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || '';

@@ -1,0 +1,219 @@
+/* ── TEMA GLASSMORPHISM ───────────────────────────────────────────────
+   Ativado via body.theme-glass
+   Referência: lavanda #EDE0F5, cards escuros com blur, gradiente teal→roxo→rosa
+   ─────────────────────────────────────────────────────────────────── */
+
+body.theme-glass {
+  background: linear-gradient(135deg, #EDE0F5 0%, #E8D4F5 50%, #F5E8F0 100%) !important;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+body.theme-glass .sidebar {
+  background: rgba(25, 20, 30, 0.92) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.08) !important;
+}
+body.theme-glass .sidebar nav a { color: rgba(255,255,255,0.65) !important; }
+body.theme-glass .sidebar nav a:hover,
+body.theme-glass .sidebar nav a.active {
+  background: rgba(255,255,255,0.1) !important;
+  color: #fff !important;
+}
+body.theme-glass .sidebar-logo { color: #fff !important; }
+body.theme-glass .sidebar-bottom .btn-logout {
+  border-color: rgba(255,255,255,0.2) !important;
+  color: rgba(255,255,255,0.6) !important;
+}
+
+/* Topbar */
+body.theme-glass .topbar {
+  background: rgba(237,224,245,0.7) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.4) !important;
+  box-shadow: none !important;
+}
+body.theme-glass .topbar h2 { color: #2D1B4E !important; }
+
+/* Cards */
+body.theme-glass .card {
+  background: rgba(28, 22, 35, 0.85) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important;
+  border-radius: 24px !important;
+  color: #fff !important;
+}
+body.theme-glass .card-title {
+  color: rgba(255,255,255,0.9) !important;
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Stat cards */
+body.theme-glass .stat-card {
+  background: rgba(28, 22, 35, 0.85) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-top: none !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important;
+  position: relative;
+  overflow: hidden;
+}
+body.theme-glass .stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4ECDC4, #9B59B6, #FF6B9D);
+}
+body.theme-glass .stat-card .stat-label { color: rgba(255,255,255,0.5) !important; }
+body.theme-glass .stat-card .stat-value { color: #fff !important; }
+body.theme-glass .stat-card .stat-sub { color: rgba(255,255,255,0.35) !important; }
+
+/* Tabelas */
+body.theme-glass table { border-radius: 16px; overflow: hidden; }
+body.theme-glass thead tr {
+  background: linear-gradient(90deg, #4ECDC4, #9B59B6) !important;
+}
+body.theme-glass tbody tr { border-bottom-color: rgba(255,255,255,0.06) !important; }
+body.theme-glass tbody tr:hover { background: rgba(255,255,255,0.05) !important; }
+body.theme-glass tbody td { color: rgba(255,255,255,0.8) !important; }
+body.theme-glass tbody td strong { color: #fff !important; }
+
+/* Botões */
+body.theme-glass .btn-primary,
+body.theme-glass .btn-novo,
+body.theme-glass .btn-submit {
+  background: linear-gradient(135deg, #9B59B6, #6C3FA0) !important;
+  border: none !important;
+  border-radius: 999px !important;
+  box-shadow: 0 4px 16px rgba(155,89,182,0.4) !important;
+}
+body.theme-glass .btn-success {
+  background: linear-gradient(135deg, #4ECDC4, #2E8B85) !important;
+  border-radius: 999px !important;
+}
+body.theme-glass .btn-outline {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+}
+body.theme-glass .btn { border-radius: 999px !important; }
+body.theme-glass .btn-whats { border-radius: 999px !important; }
+body.theme-glass .btn-danger { border-radius: 999px !important; }
+
+/* Formulários */
+body.theme-glass .form-group input,
+body.theme-glass .form-group select,
+body.theme-glass .form-group textarea {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+}
+body.theme-glass .form-group input::placeholder { color: rgba(255,255,255,0.35) !important; }
+body.theme-glass .form-group label { color: rgba(255,255,255,0.6) !important; }
+body.theme-glass .form-group input:focus,
+body.theme-glass .form-group select:focus {
+  border-color: rgba(155,89,182,0.6) !important;
+}
+
+/* Ambientes */
+body.theme-glass .ambiente-card {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  border-radius: 16px !important;
+}
+body.theme-glass .ambiente-nome {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+}
+body.theme-glass .item-row input {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+}
+body.theme-glass .btn-add-item {
+  border-color: rgba(255,255,255,0.2) !important;
+  color: rgba(255,255,255,0.7) !important;
+  border-radius: 999px !important;
+}
+body.theme-glass .btn-add-ambiente {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: rgba(255,255,255,0.8) !important;
+  border-radius: 12px !important;
+}
+
+/* Total box */
+body.theme-glass .total-box {
+  background: linear-gradient(135deg, #4ECDC4 0%, #9B59B6 100%) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(155,89,182,0.3) !important;
+}
+
+/* Toolbar */
+body.theme-glass .toolbar input,
+body.theme-glass .toolbar select {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+}
+
+/* Planos */
+body.theme-glass .plano-card {
+  background: rgba(28,22,35,0.85) !important;
+  backdrop-filter: blur(20px);
+  border-color: rgba(255,255,255,0.1) !important;
+  border-radius: 24px !important;
+  color: #fff !important;
+}
+body.theme-glass .plano-card.destaque {
+  border-color: #9B59B6 !important;
+  box-shadow: 0 0 0 1px #9B59B6, 0 8px 32px rgba(155,89,182,0.3) !important;
+}
+body.theme-glass .plano-nome { color: #C77DFF !important; }
+body.theme-glass .plano-preco { color: #fff !important; }
+body.theme-glass .plano-features li { color: rgba(255,255,255,0.7) !important; border-bottom-color: rgba(255,255,255,0.06) !important; }
+body.theme-glass .plano-features li::before { color: #4ECDC4 !important; }
+body.theme-glass .plano-features li.no { color: rgba(255,255,255,0.25) !important; }
+
+/* Logo upload */
+body.theme-glass .logo-upload {
+  border-color: rgba(255,255,255,0.15) !important;
+  border-radius: 16px !important;
+}
+body.theme-glass .logo-upload:hover { background: rgba(255,255,255,0.05) !important; }
+
+/* Modal */
+body.theme-glass #modal-pgto > div {
+  background: rgba(28,22,35,0.95) !important;
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 24px !important;
+  color: #fff !important;
+}
+body.theme-glass #modal-pgto h3 { color: #C77DFF !important; }
+body.theme-glass #modal-pgto p { color: rgba(255,255,255,0.6) !important; }
+body.theme-glass #modal-pgto input,
+body.theme-glass #modal-pgto select {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.15) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+}
+body.theme-glass #modal-pgto label { color: rgba(255,255,255,0.6) !important; }
+
+/* Scrollbar */
+body.theme-glass ::-webkit-scrollbar { width: 6px; }
+body.theme-glass ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+body.theme-glass ::-webkit-scrollbar-thumb { background: rgba(155,89,182,0.4); border-radius: 3px; }

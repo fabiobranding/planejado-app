@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard — OrçaMármore</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme-glass.css">
 <style>
 .stats-row { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
 .stat-card-fin {
@@ -77,9 +78,11 @@
 <script src="js/pdf.js"></script>
 <script>
 requireAuth();
+applyStoredTheme();
 applyCompanyTheme();
 seedDemoData();
 document.getElementById('sidebar').innerHTML = renderSidebar('dashboard');
+renderThemeToggle();
 var u = getUsuario();
 var emp = getEmpresa();
 document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || (u && u.nome) || '';

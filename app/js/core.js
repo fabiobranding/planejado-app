@@ -4,6 +4,38 @@ function setUsuario(u) { localStorage.setItem('om_usuario', JSON.stringify(u)); 
 function logout() { localStorage.removeItem('om_usuario'); window.location.href = '../login.html'; }
 function requireAuth() { if (!getUsuario()) { window.location.href = '../login.html'; } }
 
+// ── TEMA ──────────────────────────────────────────────────────────────
+function getTheme() { return localStorage.getItem('om_tema') || 'default'; }
+function setTheme(t) {
+  localStorage.setItem('om_tema', t);
+  if (t === 'glass') {
+    document.body.classList.add('theme-glass');
+  } else {
+    document.body.classList.remove('theme-glass');
+  }
+}
+function applyStoredTheme() {
+  if (getTheme() === 'glass') document.body.classList.add('theme-glass');
+}
+function toggleTheme() {
+  setTheme(getTheme() === 'glass' ? 'default' : 'glass');
+  renderThemeToggle();
+}
+function renderThemeToggle() {
+  var el = document.getElementById('theme-toggle');
+  if (!el) return;
+  var isGlass = getTheme() === 'glass';
+  el.innerHTML = '<button onclick="toggleTheme()" title="Alternar tema" style="' +
+    'display:flex;align-items:center;gap:8px;background:' + (isGlass ? 'rgba(255,255,255,0.15)' : '#f0f0f0') + ';' +
+    'border:none;border-radius:999px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:700;' +
+    'color:' + (isGlass ? '#fff' : '#1E3A5F') + ';transition:all .2s">' +
+    '<span style="width:32px;height:18px;background:' + (isGlass ? 'linear-gradient(90deg,#9B59B6,#4ECDC4)' : '#ddd') + ';border-radius:999px;position:relative;display:inline-block;transition:all .3s">' +
+    '<span style="position:absolute;top:2px;' + (isGlass ? 'right:2px;background:#fff' : 'left:2px;background:#fff') + ';width:14px;height:14px;border-radius:50%;transition:all .3s;box-shadow:0 1px 4px rgba(0,0,0,.2)"></span>' +
+    '</span>' +
+    (isGlass ? '&#10022; Glass' : '&#9728; Padrão') +
+    '</button>';
+}
+
 // ── EMPRESA ───────────────────────────────────────────────────────────
 function getEmpresa() {
   const u = getUsuario();
@@ -113,7 +145,8 @@ function renderSidebar(active) {
     '<a href="planos.html" class="' + (active==='planos'?'active':'') + '">' + icons.planos + ' Planos</a>' +
     '</nav>' +
     '<div class="sidebar-bottom">' +
-    '<div style="font-size:12px;color:#93c5fd;margin-bottom:8px">' + (emp.nome || (u && u.marmoraria) || '') + '</div>' +
+    '<div style="font-size:12px;color:#a5d6a7;margin-bottom:8px">' + (emp.nome || (u && u.marmoraria) || '') + '</div>' +
+    '<div id="theme-toggle" style="margin-bottom:10px"></div>' +
     '<button class="btn-logout" onclick="logout()">Sair</button>' +
     '</div></aside>';
 }

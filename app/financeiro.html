@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Financeiro — OrçaMármore</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme-glass.css">
 <style>
 /* ── Layout geral ── */
 .fin-section-title {
@@ -277,9 +278,11 @@
 <script src="js/pdf.js"></script>
 <script>
 requireAuth();
+applyStoredTheme();
 applyCompanyTheme();
 seedDemoData();
 document.getElementById('sidebar').innerHTML = renderSidebar('financeiro');
+renderThemeToggle();
 var u = getUsuario();
 var emp = getEmpresa();
 document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || (u && u.nome) || '';
