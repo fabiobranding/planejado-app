@@ -127,11 +127,11 @@ var totalOutros = doMes
   .reduce(function(s,o){ return s + (Number(o.valor_pago)||0); }, 0);
 
 document.getElementById('stats-pgto').innerHTML =
-  '<div class="pgto-card"><div class="pgto-icon">💙</div><div class="pgto-label">Pix</div><div class="pgto-val">R$ ' + formatBRL(totalPix) + '</div></div>' +
-  '<div class="pgto-card"><div class="pgto-icon">💳</div><div class="pgto-label">Crédito</div><div class="pgto-val">R$ ' + formatBRL(totalCredito) + '</div></div>' +
-  '<div class="pgto-card"><div class="pgto-icon">🏦</div><div class="pgto-label">Débito</div><div class="pgto-val">R$ ' + formatBRL(totalDebito) + '</div></div>' +
-  '<div class="pgto-card"><div class="pgto-icon">💵</div><div class="pgto-label">Dinheiro</div><div class="pgto-val">R$ ' + formatBRL(totalDinheiro) + '</div></div>' +
-  '<div class="pgto-card"><div class="pgto-icon">📦</div><div class="pgto-label">Outros</div><div class="pgto-val">R$ ' + formatBRL(totalOutros) + '</div></div>';
+  '<div class="pgto-card"><div class="pgto-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><div class="pgto-label">Pix</div><div class="pgto-val">R$ ' + formatBRL(totalPix) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div class="pgto-label">Crédito</div><div class="pgto-val">R$ ' + formatBRL(totalCredito) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="6" y1="16" x2="10" y2="16"/></svg></div><div class="pgto-label">Débito</div><div class="pgto-val">R$ ' + formatBRL(totalDebito) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M1 9h2M1 15h2M21 9h2M21 15h2"/></svg></div><div class="pgto-label">Dinheiro</div><div class="pgto-val">R$ ' + formatBRL(totalDinheiro) + '</div></div>' +
+  '<div class="pgto-card"><div class="pgto-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div><div class="pgto-label">Outros</div><div class="pgto-val">R$ ' + formatBRL(totalOutros) + '</div></div>';
 
 function statusPgtoBadge(orc) {
   var vp = Number(orc.valor_pago) || 0;
