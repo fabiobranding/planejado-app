@@ -534,6 +534,7 @@
 <section class="hero">
   <video id="hero-video" muted loop playsinline preload="auto" style="opacity:0;transition:opacity 1s ease">
     <source src="video1.mp4" type="video/mp4">
+    <source src="video1.mp4" type="video/quicktime">
   </video>
   <!-- Fundo enquanto vídeo carrega -->
   <div id="video-bg" style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1520 0%,#1a2840 50%,#0d1520 100%);z-index:0;transition:opacity 1s ease"></div>
@@ -670,10 +671,7 @@
   var vid = document.getElementById('hero-video');
   var vbg = document.getElementById('video-bg');
   if (vid) {
-    var RATE = 0.72; // Taxa suave, sem gaguejo
-    
     function startVideo() {
-      vid.playbackRate = RATE;
       vid.play().catch(function(){});
       // Fade in suave do vídeo
       vid.style.opacity = '1';
@@ -684,18 +682,13 @@
     vid.addEventListener('progress', function() {
       if (vid.buffered.length > 0) {
         var buffered = vid.buffered.end(vid.buffered.length - 1);
-        if (buffered > 4 && vid.paused) startVideo();
+        if (buffered > 2 && vid.paused) startVideo();
       }
     });
 
     // Fallback: se demorar muito, toca assim mesmo
     vid.addEventListener('canplay', function() {
       if (vid.paused) startVideo();
-    });
-
-    // Manter taxa correta durante reprodução
-    vid.addEventListener('ratechange', function() {
-      if (vid.playbackRate !== RATE) vid.playbackRate = RATE;
     });
 
     // Iniciar carregamento
