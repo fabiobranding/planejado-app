@@ -532,9 +532,11 @@
 
 <!-- HERO com vídeo -->
 <section class="hero">
-  <video autoplay muted loop playsinline preload="auto">
+  <video id="hero-video" muted loop playsinline preload="auto" style="opacity:0;transition:opacity 1s ease">
     <source src="video1.mp4" type="video/mp4">
   </video>
+  <!-- Fundo enquanto vídeo carrega -->
+  <div id="video-bg" style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1520 0%,#1a2840 50%,#0d1520 100%);z-index:0;transition:opacity 1s ease"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <p class="hero-eyebrow">Orçamentos para marmorarias</p>
@@ -664,13 +666,40 @@
 </footer>
 
 <script>
-  // Vídeo mais lento
-  var vid = document.querySelector('.hero video');
+  // Vídeo hero — buffer completo antes de tocar
+  var vid = document.getElementById('hero-video');
+  var vbg = document.getElementById('video-bg');
   if (vid) {
-    vid.addEventListener('loadeddata', function() {
-      vid.playbackRate = 0.55;
+    var RATE = 0.72; // Taxa suave, sem gaguejo
+    
+    function startVideo() {
+      vid.playbackRate = RATE;
+      vid.play().catch(function(){});
+      // Fade in suave do vídeo
+      vid.style.opacity = '1';
+      if (vbg) setTimeout(function(){ vbg.style.opacity = '0'; }, 800);
+    }
+
+    // Esperar buffer suficiente (4 segundos de conteúdo)
+    vid.addEventListener('progress', function() {
+      if (vid.buffered.length > 0) {
+        var buffered = vid.buffered.end(vid.buffered.length - 1);
+        if (buffered > 4 && vid.paused) startVideo();
+      }
     });
-    vid.playbackRate = 0.55;
+
+    // Fallback: se demorar muito, toca assim mesmo
+    vid.addEventListener('canplay', function() {
+      if (vid.paused) startVideo();
+    });
+
+    // Manter taxa correta durante reprodução
+    vid.addEventListener('ratechange', function() {
+      if (vid.playbackRate !== RATE) vid.playbackRate = RATE;
+    });
+
+    // Iniciar carregamento
+    vid.load();
   }
 
   // Nav scroll effect
