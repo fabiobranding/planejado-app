@@ -73,15 +73,16 @@ function hoje() {
 }
 
 function statusBadge(status) {
-  const map = {
-    'Em aberto': 'badge-aberto',
-    'Aprovado': 'badge-aprovado',
-    'Em producao': 'badge-producao',
-    'Em produção': 'badge-producao',
-    'Entregue': 'badge-entregue',
-    'Recusado': 'badge-recusado'
+  var map = {
+    'Em aberto':   'background:#FEF3C7;color:#92400E',
+    'Aprovado':    'background:#DBEAFE;color:#1E40AF',
+    'Em produção': 'background:#FED7AA;color:#9A3412',
+    'Entregue':    'background:#DCFCE7;color:#166534',
+    'Atrasado':    'background:#FEE2E2;color:#991B1B',
+    'Recusado':    'background:#F3F4F6;color:#6B7280'
   };
-  return '<span class="badge ' + (map[status] || 'badge-aberto') + '">' + (status || 'Em aberto') + '</span>';
+  var style = map[status] || 'background:#F3F4F6;color:#6B7280';
+  return '<span style="' + style + ';padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap">' + (status || 'Em aberto') + '</span>';
 }
 
 function renderSidebar(active) {

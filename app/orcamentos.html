@@ -29,6 +29,7 @@
             <option>Aprovado</option>
             <option>Em produção</option>
             <option>Entregue</option>
+            <option>Atrasado</option>
             <option>Recusado</option>
           </select>
         </div>
@@ -56,7 +57,7 @@ const u = getUsuario();
 const emp = getEmpresa();
 document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || '';
 
-const STATUSES = ['Em aberto','Aprovado','Em produção','Entregue','Recusado'];
+const STATUSES = ['Em aberto','Aprovado','Em produção','Entregue','Atrasado','Recusado'];
 
 function renderTabela() {
   var busca = document.getElementById('busca').value.toLowerCase();
@@ -97,8 +98,76 @@ function ciclarStatus(id) {
   var orc = orcs.find(function(o) { return o.id === id; });
   if (!orc) return;
   var idx = STATUSES.indexOf(orc.status);
-  orc.status = STATUSES[(idx + 1) % STATUSES.length];
+  var proximo = STATUSES[(idx + 1) % STATUSES.length];
+  if (proximo === 'Aprovado' || proximo === 'Entregue') {
+    abrirModalPgto(id, proximo);
+    return;
+  }
+  orc.status = proximo;
   saveOrcamento(orc);
+  renderTabela();
+}
+
+var _modalPgtoId = null;
+var _modalProxStatus = null;
+
+function abrirModalPgto(id, proxStatus) {
+  _modalPgtoId = id;
+  _modalProxStatus = proxStatus;
+  var orc = getOrcamentos().find(function(o) { return o.id === id; });
+  document.getElementById('mpgto-valor').value = orc.valor_pago ? formatBRL(orc.valor_pago) : formatBRL(orc.valor);
+  document.getElementById('mpgto-forma').value = orc.forma_pagamento || '';
+  document.getElementById('mpgto-data').value = orc.data_pagamento || hoje();
+  if (proxStatus === 'Aprovado') {
+    document.getElementById('modal-pgto-titulo').textContent = 'Aprovar Orçamento — Registrar Pagamento';
+    document.getElementById('modal-pgto-sub').textContent = 'Informe os dados do pagamento para confirmar a aprovação.';
+    document.getElementById('btn-confirmar-pgto').textContent = 'Confirmar e Aprovar';
+  } else {
+    document.getElementById('modal-pgto-titulo').textContent = 'Marcar como Entregue — Pagamento Final';
+    document.getElementById('modal-pgto-sub').textContent = 'Confirme o recebimento total antes de marcar como entregue.';
+    document.getElementById('btn-confirmar-pgto').textContent = 'Confirmar e Entregar';
+  }
+  atualizarRestante();
+  document.getElementById('modal-pgto').style.display = 'flex';
+  document.getElementById('mpgto-valor').focus();
+}
+
+function atualizarRestante() {
+  var orc = getOrcamentos().find(function(o) { return o.id === _modalPgtoId; });
+  if (!orc) return;
+  var pago = parseBRL(document.getElementById('mpgto-valor').value) || 0;
+  var rest = orc.valor - pago;
+  var box = document.getElementById('mpgto-restante');
+  if (rest > 0) {
+    document.getElementById('mpgto-restante-val').textContent = 'R$ ' + formatBRL(rest);
+    box.style.display = 'block';
+    box.style.background = '#fef9c3';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function fecharModalPgto() {
+  document.getElementById('modal-pgto').style.display = 'none';
+  _modalPgtoId = null;
+  _modalProxStatus = null;
+}
+
+function confirmarModalPgto() {
+  if (!_modalPgtoId) return;
+  var pago = parseBRL(document.getElementById('mpgto-valor').value) || 0;
+  var forma = document.getElementById('mpgto-forma').value;
+  var data = document.getElementById('mpgto-data').value;
+  if (!forma) { alert('Selecione a forma de pagamento.'); return; }
+  var orcs = getOrcamentos();
+  var orc = orcs.find(function(o) { return o.id === _modalPgtoId; });
+  if (!orc) return;
+  orc.status = _modalProxStatus;
+  orc.valor_pago = pago;
+  orc.forma_pagamento = forma;
+  orc.data_pagamento = data;
+  saveOrcamento(orc);
+  fecharModalPgto();
   renderTabela();
 }
 
@@ -142,6 +211,44 @@ function excluir(id) {
 }
 
 renderTabela();
+document.getElementById('mpgto-valor').addEventListener('input', atualizarRestante);
 </script>
+
+<div id="modal-pgto" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:32px;width:460px;max-width:95vw;box-shadow:0 8px 40px rgba(0,0,0,.2)">
+    <h3 style="color:#1E3A5F;font-size:18px;margin-bottom:6px" id="modal-pgto-titulo">Registrar Pagamento</h3>
+    <p style="color:#888;font-size:13px;margin-bottom:24px" id="modal-pgto-sub">Informe os dados do pagamento para aprovar o orçamento.</p>
+
+    <div style="margin-bottom:14px">
+      <label style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Valor Pago (R$)</label>
+      <input type="text" id="mpgto-valor" placeholder="0,00" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:700;outline:none;box-sizing:border-box">
+    </div>
+    <div style="display:flex;gap:12px;margin-bottom:14px">
+      <div style="flex:1">
+        <label style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Forma de Pagamento</label>
+        <select id="mpgto-forma" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 14px;font-size:13px;outline:none;background:#fff">
+          <option value="">Selecione...</option>
+          <option>Pix</option>
+          <option>Débito</option>
+          <option>Crédito</option>
+          <option>Dinheiro</option>
+          <option>Transferência</option>
+          <option>Parcelado</option>
+        </select>
+      </div>
+      <div style="flex:1">
+        <label style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Data do Pagamento</label>
+        <input type="text" id="mpgto-data" placeholder="dd/mm/aaaa" style="width:100%;border:1.5px solid #ddd;border-radius:8px;padding:10px 14px;font-size:13px;outline:none;box-sizing:border-box">
+      </div>
+    </div>
+    <div id="mpgto-restante" style="background:#fef9c3;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:20px;display:none">
+      <strong>Valor restante:</strong> <span id="mpgto-restante-val">R$ 0,00</span>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button onclick="fecharModalPgto()" style="background:#fff;border:1.5px solid #ddd;border-radius:8px;padding:10px 20px;font-size:13px;cursor:pointer">Cancelar</button>
+      <button id="btn-confirmar-pgto" onclick="confirmarModalPgto()" style="background:#1E3A5F;color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer">Confirmar e Aprovar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

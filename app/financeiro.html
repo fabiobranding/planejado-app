@@ -6,48 +6,115 @@
 <title>Financeiro — OrçaMármore</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-.filtros-bar { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; align-items:flex-end; }
-.filtros-bar select, .filtros-bar input { padding:8px 12px; border:1px solid #dde1ea; border-radius:8px; font-size:13px; background:#fff; }
-.filtros-bar select:focus, .filtros-bar input:focus { outline:none; border-color:#1E3A5F; }
-.resumo-cards { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
-.resumo-card {
-  flex:1; min-width:150px; background:#fff; border-radius:12px;
-  padding:16px 20px; box-shadow:0 1px 4px rgba(0,0,0,.08);
-  border-top:3px solid #1E3A5F;
+/* ── Layout geral ── */
+.fin-section-title {
+  font-size:15px; font-weight:800; color:#1E3A5F;
+  margin:28px 0 14px; display:flex; align-items:center; gap:8px;
 }
-.resumo-card.green { border-top-color:#16a34a; }
-.resumo-card.orange { border-top-color:#d97706; }
-.resumo-card.teal { border-top-color:#0891b2; }
-.resumo-card .r-label { font-size:11px; color:#666; font-weight:600; text-transform:uppercase; letter-spacing:.4px; margin-bottom:5px; }
-.resumo-card .r-value { font-size:20px; font-weight:800; color:#1E3A5F; }
-.resumo-card.green .r-value { color:#16a34a; }
-.resumo-card.orange .r-value { color:#d97706; }
-.resumo-card.teal .r-value { color:#0891b2; }
-.badge-pago { background:#dcfce7; color:#166534; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
-.badge-parcial { background:#fef9c3; color:#854d0e; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
-.badge-pendente { background:#fee2e2; color:#991b1b; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
-tr.row-pago { background:#f0fdf4; }
-tr.row-parcial { background:#fefce8; }
-tr.row-pendente { background:#fef2f2; }
-.tfoot-total td { font-weight:800; color:#1E3A5F; border-top:2px solid #1E3A5F; background:#EEF2FF; }
-/* Modal */
+.fin-section-title::after {
+  content:''; flex:1; height:1px; background:#e5e7eb;
+}
+
+/* ── Seção A: Panorama ── */
+.panorama-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:8px;
+}
+@media(max-width:900px){ .panorama-grid{ grid-template-columns:repeat(2,1fr); } }
+.mes-card {
+  background:#fff; border-radius:12px; padding:14px 16px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07); border-left:3px solid #1E3A5F;
+  cursor:pointer; transition:box-shadow .15s;
+}
+.mes-card:hover { box-shadow:0 3px 12px rgba(30,58,95,.13); }
+.mes-card.mes-ativo { border-left-color:#1E3A5F; box-shadow:0 0 0 2px #1E3A5F; }
+.mes-card .mc-nome { font-size:12px; font-weight:700; color:#1E3A5F; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.mes-card .mc-row { display:flex; justify-content:space-between; font-size:11px; color:#666; margin-bottom:3px; }
+.mes-card .mc-row span:last-child { font-weight:700; color:#333; }
+.mes-card .mc-saldo { font-size:13px; font-weight:800; margin-top:6px; }
+.mc-saldo.positivo { color:#166534; }
+.mc-saldo.negativo { color:#991B1B; }
+.mc-saldo.neutro { color:#6B7280; }
+
+/* ── Seção B: Mês selecionado ── */
+.filtro-mes-bar {
+  display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:20px;
+  background:#fff; border-radius:12px; padding:16px 20px;
+  box-shadow:0 1px 4px rgba(0,0,0,.07);
+}
+.filtro-mes-bar label { font-size:11px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:.5px; display:block; margin-bottom:4px; }
+.filtro-mes-bar select, .filtro-mes-bar input {
+  padding:8px 12px; border:1.5px solid #dde1ea; border-radius:8px;
+  font-size:13px; background:#fff; outline:none;
+}
+.filtro-mes-bar select:focus, .filtro-mes-bar input:focus { border-color:#1E3A5F; }
+
+.secao-b-paineis { display:grid; grid-template-columns:1fr 320px; gap:16px; margin-bottom:8px; }
+@media(max-width:900px){ .secao-b-paineis{ grid-template-columns:1fr; } }
+
+/* Painel entradas */
+.painel-entradas { background:#fff; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+.painel-entradas h4 { font-size:13px; font-weight:800; color:#1E3A5F; margin-bottom:14px; }
+.ent-table { width:100%; border-collapse:collapse; font-size:12px; }
+.ent-table th { background:#F8FAFC; color:#555; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.4px; padding:8px 10px; text-align:left; border-bottom:1px solid #e5e7eb; }
+.ent-table td { padding:8px 10px; border-bottom:1px solid #f3f4f6; vertical-align:middle; }
+.ent-table tfoot td { font-weight:800; color:#1E3A5F; background:#EEF2FF; border-top:2px solid #1E3A5F; }
+
+/* Painel breakdown */
+.painel-breakdown { background:#fff; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+.painel-breakdown h4 { font-size:13px; font-weight:800; color:#1E3A5F; margin-bottom:14px; }
+.forma-card {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 14px; border-radius:8px; margin-bottom:8px;
+  background:#F8FAFC; border-left:3px solid #1E3A5F;
+}
+.forma-card .fc-nome { font-size:12px; font-weight:700; color:#333; }
+.forma-card .fc-val { font-size:14px; font-weight:800; color:#1E3A5F; }
+.forma-card .fc-count { font-size:10px; color:#888; margin-top:1px; }
+
+/* ── Seção C: Tabela completa ── */
+.tabela-completa-wrap { background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.07); overflow:hidden; }
+.tc-header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid #e5e7eb; }
+.tc-header span { font-size:13px; font-weight:800; color:#1E3A5F; }
+.tc-filtros { display:flex; gap:8px; }
+.tc-filtros input, .tc-filtros select {
+  padding:6px 10px; border:1.5px solid #dde1ea; border-radius:7px;
+  font-size:12px; background:#fff; outline:none;
+}
+.tc-filtros input:focus, .tc-filtros select:focus { border-color:#1E3A5F; }
+.tc-table { width:100%; border-collapse:collapse; font-size:12px; }
+.tc-table th {
+  background:#F8FAFC; color:#555; font-weight:700; font-size:11px;
+  text-transform:uppercase; letter-spacing:.4px; padding:10px 12px;
+  text-align:left; border-bottom:1px solid #e5e7eb; white-space:nowrap;
+}
+.tc-table td { padding:9px 12px; border-bottom:1px solid #f3f4f6; vertical-align:middle; }
+.tc-table tr.row-pago td { background:#f0fdf4; }
+.tc-table tr.row-parcial td { background:#fefce8; }
+.tc-table tr.row-pendente td { background:#fff; }
+.tc-table tr.row-atrasado td { background:#fef2f2; }
+.tc-table tfoot td { font-weight:800; color:#1E3A5F; border-top:2px solid #1E3A5F; background:#EEF2FF; }
+.badge-pgto-pago { background:#dcfce7; color:#166534; padding:3px 9px; border-radius:20px; font-size:10px; font-weight:700; white-space:nowrap; }
+.badge-pgto-parcial { background:#fef9c3; color:#854d0e; padding:3px 9px; border-radius:20px; font-size:10px; font-weight:700; white-space:nowrap; }
+.badge-pgto-pendente { background:#F3F4F6; color:#6B7280; padding:3px 9px; border-radius:20px; font-size:10px; font-weight:700; white-space:nowrap; }
+
+/* ── Modal edição pgto ── */
 .modal-overlay {
   display:none; position:fixed; top:0; left:0; width:100%; height:100%;
   background:rgba(0,0,0,.45); z-index:1000; justify-content:center; align-items:center;
 }
 .modal-overlay.open { display:flex; }
 .modal-box {
-  background:#fff; border-radius:14px; padding:28px 32px; width:360px;
+  background:#fff; border-radius:14px; padding:28px 32px; width:380px; max-width:95vw;
   box-shadow:0 8px 32px rgba(0,0,0,.18);
 }
 .modal-box h3 { color:#1E3A5F; margin-bottom:18px; font-size:16px; }
 .modal-box .form-group { margin-bottom:14px; }
 .modal-box label { display:block; font-size:12px; font-weight:600; color:#444; margin-bottom:5px; }
 .modal-box input, .modal-box select {
-  width:100%; padding:9px 12px; border:1px solid #dde1ea; border-radius:8px;
-  font-size:14px; box-sizing:border-box;
+  width:100%; padding:9px 12px; border:1.5px solid #dde1ea; border-radius:8px;
+  font-size:14px; box-sizing:border-box; outline:none;
 }
-.modal-box input:focus, .modal-box select:focus { outline:none; border-color:#1E3A5F; }
+.modal-box input:focus, .modal-box select:focus { border-color:#1E3A5F; }
 .modal-actions { display:flex; gap:10px; margin-top:18px; }
 </style>
 </head>
@@ -61,17 +128,24 @@ tr.row-pendente { background:#fef2f2; }
     </div>
     <div class="content">
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <h3 style="color:#1E3A5F;font-size:15px">Controle de Recebimentos</h3>
         <button class="btn-novo" onclick="location.href='novo-orcamento.html'">+ Novo Orçamento</button>
       </div>
 
-      <!-- Filtros -->
-      <div class="filtros-bar">
+      <!-- ════ SEÇÃO A: PANORAMA ANUAL ════ -->
+      <div class="fin-section-title">Panorama Anual
+        <select id="ano-panorama" onchange="renderPanorama()" style="margin-left:8px;padding:4px 8px;border:1.5px solid #dde1ea;border-radius:7px;font-size:12px;font-weight:700;color:#1E3A5F;background:#fff;outline:none"></select>
+      </div>
+      <div class="panorama-grid" id="panorama-grid"></div>
+
+      <!-- ════ SEÇÃO B: MÊS SELECIONADO ════ -->
+      <div class="fin-section-title">Mês Selecionado</div>
+
+      <div class="filtro-mes-bar">
         <div>
-          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Mês</div>
-          <select id="filtro-mes" onchange="renderTabela()">
-            <option value="">Todos</option>
+          <label>Mês</label>
+          <select id="filtro-mes" onchange="renderSecaoB();renderSecaoC()">
             <option value="0">Janeiro</option>
             <option value="1">Fevereiro</option>
             <option value="2">Março</option>
@@ -87,35 +161,64 @@ tr.row-pendente { background:#fef2f2; }
           </select>
         </div>
         <div>
-          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Ano</div>
-          <select id="filtro-ano" onchange="renderTabela()"></select>
+          <label>Ano</label>
+          <select id="filtro-ano" onchange="renderPanorama();renderSecaoB();renderSecaoC()"></select>
         </div>
         <div>
-          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Forma de Pagamento</div>
-          <select id="filtro-forma" onchange="renderTabela()">
-            <option value="">Todas</option>
-            <option>Pix</option>
-            <option>Débito</option>
-            <option>Crédito</option>
-            <option>Dinheiro</option>
-            <option>Transferência</option>
-            <option>Parcelado</option>
-          </select>
-        </div>
-        <div>
-          <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Buscar cliente</div>
-          <input type="text" id="filtro-cliente" placeholder="Nome do cliente..." oninput="renderTabela()" style="min-width:200px">
+          <label>Buscar cliente</label>
+          <input type="text" id="filtro-cliente" placeholder="Nome do cliente..." oninput="renderSecaoB();renderSecaoC()" style="min-width:200px">
         </div>
       </div>
 
-      <!-- Cards de resumo -->
-      <div class="resumo-cards" id="resumo-cards"></div>
+      <div class="secao-b-paineis">
+        <!-- Painel esquerdo: entradas -->
+        <div class="painel-entradas">
+          <h4>Entradas do Mês</h4>
+          <table class="ent-table">
+            <thead><tr>
+              <th>Cliente</th>
+              <th>Valor Total</th>
+              <th>Valor Pago</th>
+              <th>Forma Pgto</th>
+              <th>Data Pgto</th>
+            </tr></thead>
+            <tbody id="ent-tbody"></tbody>
+            <tfoot id="ent-tfoot"></tfoot>
+          </table>
+        </div>
+        <!-- Painel direito: breakdown por forma -->
+        <div class="painel-breakdown">
+          <h4>Por Forma de Pagamento</h4>
+          <div id="breakdown-formas"></div>
+        </div>
+      </div>
 
-      <!-- Tabela -->
-      <div class="card">
-        <div class="card-title">Orçamentos</div>
-        <div class="table-wrap">
-          <table id="tabela-fin">
+      <!-- ════ SEÇÃO C: TABELA COMPLETA ════ -->
+      <div class="fin-section-title">Todos os Orçamentos do Mês</div>
+
+      <div class="tabela-completa-wrap">
+        <div class="tc-header">
+          <span id="tc-titulo">Orçamentos</span>
+          <div class="tc-filtros">
+            <select id="tc-filtro-forma" onchange="renderSecaoC()">
+              <option value="">Todas as formas</option>
+              <option>Pix</option>
+              <option>Débito</option>
+              <option>Crédito</option>
+              <option>Dinheiro</option>
+              <option>Transferência</option>
+              <option>Parcelado</option>
+            </select>
+            <select id="tc-filtro-pgto" onchange="renderSecaoC()">
+              <option value="">Todos</option>
+              <option value="pago">Pago</option>
+              <option value="parcial">Parcial</option>
+              <option value="pendente">Pendente</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tc-table">
             <thead><tr>
               <th>N°</th>
               <th>Cliente</th>
@@ -125,17 +228,18 @@ tr.row-pendente { background:#fef2f2; }
               <th>Data Pgto</th>
               <th>Forma Pgto</th>
               <th>Status</th>
+              <th>Pgto</th>
               <th>Ações</th>
             </tr></thead>
-            <tbody id="tbody-fin"></tbody>
-            <tfoot id="tfoot-fin"></tfoot>
+            <tbody id="tc-tbody"></tbody>
+            <tfoot id="tc-tfoot"></tfoot>
           </table>
         </div>
       </div>
 
-    </div>
-  </div>
-</div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-layout -->
 
 <!-- Modal edição de pagamento -->
 <div class="modal-overlay" id="modal-pgto">
@@ -180,7 +284,9 @@ var u = getUsuario();
 var emp = getEmpresa();
 document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || (u && u.nome) || '';
 
-// Preencher select de anos
+var MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+// ── Preencher selects de ano ──────────────────────────────────────────
 (function() {
   var anos = new Set();
   var now = new Date();
@@ -190,47 +296,44 @@ document.getElementById('user-name').textContent = emp.nome || (u && u.marmorari
     var p = (o.data||'').split('/');
     if (p.length >= 3) anos.add(parseInt(p[2]));
   });
-  var sel = document.getElementById('filtro-ano');
-  Array.from(anos).sort(function(a,b){return b-a;}).forEach(function(a) {
-    var opt = document.createElement('option');
-    opt.value = a; opt.textContent = a;
-    if (a === anoAtual) opt.selected = true;
-    sel.appendChild(opt);
+
+  var anosArr = Array.from(anos).sort(function(a,b){ return b-a; });
+
+  ['filtro-ano','ano-panorama'].forEach(function(selId) {
+    var sel = document.getElementById(selId);
+    anosArr.forEach(function(a) {
+      var opt = document.createElement('option');
+      opt.value = a; opt.textContent = a;
+      if (a === anoAtual) opt.selected = true;
+      sel.appendChild(opt);
+    });
   });
-  // Default: mês atual
+
   document.getElementById('filtro-mes').value = String(now.getMonth());
 })();
 
-function filtrarOrcamentos() {
-  var orcs = getOrcamentos();
-  var mes = document.getElementById('filtro-mes').value;
-  var ano = document.getElementById('filtro-ano').value;
-  var forma = document.getElementById('filtro-forma').value.toLowerCase();
-  var cliente = document.getElementById('filtro-cliente').value.toLowerCase();
+// ── Helpers ──────────────────────────────────────────────────────────
+function getAnoFiltro() { return parseInt(document.getElementById('filtro-ano').value); }
+function getMesFiltro() { return parseInt(document.getElementById('filtro-mes').value); }
 
-  return orcs.filter(function(o) {
+function orcDoMes(mes, ano) {
+  return getOrcamentos().filter(function(o) {
     var p = (o.data||'').split('/');
-    if (mes !== '') {
-      if (p.length < 3 || parseInt(p[1])-1 !== parseInt(mes)) return false;
-    }
-    if (ano !== '') {
-      if (p.length < 3 || parseInt(p[2]) !== parseInt(ano)) return false;
-    }
-    if (forma && (o.forma_pagamento||'').toLowerCase() !== forma) return false;
-    if (cliente && !(o.cliente||'').toLowerCase().includes(cliente)) return false;
-    return true;
+    if (p.length < 3) return false;
+    return parseInt(p[1])-1 === mes && parseInt(p[2]) === ano;
   });
 }
 
 function statusPgtoBadge(orc) {
   var vp = Number(orc.valor_pago) || 0;
   var vt = Number(orc.valor) || 0;
-  if (vp >= vt && vt > 0) return '<span class="badge-pago">Pago</span>';
-  if (vp > 0 && vp < vt) return '<span class="badge-parcial">Parcial</span>';
-  return '<span class="badge-pendente">Pendente</span>';
+  if (vp >= vt && vt > 0) return '<span class="badge-pgto-pago">Pago</span>';
+  if (vp > 0 && vp < vt) return '<span class="badge-pgto-parcial">Parcial ~R$' + formatBRL(vt-vp) + '</span>';
+  return '<span class="badge-pgto-pendente">Pendente</span>';
 }
 
-function rowClass(orc) {
+function rowClassTC(orc) {
+  if (orc.status === 'Atrasado') return 'row-atrasado';
   var vp = Number(orc.valor_pago) || 0;
   var vt = Number(orc.valor) || 0;
   if (vp >= vt && vt > 0) return 'row-pago';
@@ -238,6 +341,184 @@ function rowClass(orc) {
   return 'row-pendente';
 }
 
+function pgtoFiltroPassar(orc, filtro) {
+  var vp = Number(orc.valor_pago) || 0;
+  var vt = Number(orc.valor) || 0;
+  if (!filtro) return true;
+  if (filtro === 'pago') return vp >= vt && vt > 0;
+  if (filtro === 'parcial') return vp > 0 && vp < vt;
+  if (filtro === 'pendente') return vp === 0;
+  return true;
+}
+
+// ── SEÇÃO A: Panorama anual ───────────────────────────────────────────
+function renderPanorama() {
+  var ano = parseInt(document.getElementById('ano-panorama').value);
+  var mesSel = getMesFiltro();
+  var anoFiltro = getAnoFiltro();
+
+  var html = '';
+  for (var m = 0; m < 12; m++) {
+    var lista = orcDoMes(m, ano);
+    var orcado = lista.reduce(function(s,o){ return s+(Number(o.valor)||0); }, 0);
+    var recebido = lista.reduce(function(s,o){ return s+(Number(o.valor_pago)||0); }, 0);
+    var saldo = recebido - orcado;
+    var saldoClass = saldo > 0 ? 'positivo' : (saldo < 0 ? 'negativo' : 'neutro');
+    var ativo = (m === mesSel && ano === anoFiltro) ? ' mes-ativo' : '';
+
+    html += '<div class="mes-card' + ativo + '" onclick="selecionarMes(' + m + ',' + ano + ')">' +
+      '<div class="mc-nome">' + MESES_NOMES[m] + '</div>' +
+      '<div class="mc-row"><span>Orçado</span><span>R$ ' + formatBRL(orcado) + '</span></div>' +
+      '<div class="mc-row"><span>Recebido</span><span>R$ ' + formatBRL(recebido) + '</span></div>' +
+      '<div class="mc-saldo ' + saldoClass + '">' + (saldo >= 0 ? '+' : '') + 'R$ ' + formatBRL(saldo) + '</div>' +
+    '</div>';
+  }
+  document.getElementById('panorama-grid').innerHTML = html;
+}
+
+function selecionarMes(mes, ano) {
+  document.getElementById('filtro-mes').value = String(mes);
+  document.getElementById('filtro-ano').value = String(ano);
+  renderSecaoB();
+  renderSecaoC();
+  renderPanorama();
+  document.getElementById('filtro-mes').scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+// ── SEÇÃO B: Entradas e breakdown ────────────────────────────────────
+function renderSecaoB() {
+  var mes = getMesFiltro();
+  var ano = getAnoFiltro();
+  var cliente = document.getElementById('filtro-cliente').value.toLowerCase();
+  var lista = orcDoMes(mes, ano).filter(function(o) {
+    return !cliente || (o.cliente||'').toLowerCase().includes(cliente);
+  });
+
+  // Apenas pagos ou com valor_pago > 0
+  var entradas = lista.filter(function(o) {
+    return (Number(o.valor_pago)||0) > 0 || o.status === 'Entregue';
+  });
+
+  var totTotal = entradas.reduce(function(s,o){ return s+(Number(o.valor)||0); }, 0);
+  var totPago = entradas.reduce(function(s,o){ return s+(Number(o.valor_pago)||0); }, 0);
+
+  var tbody = document.getElementById('ent-tbody');
+  if (!entradas.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#aaa;font-size:12px">Nenhuma entrada no mês.</td></tr>';
+    document.getElementById('ent-tfoot').innerHTML = '';
+  } else {
+    tbody.innerHTML = entradas.map(function(o) {
+      return '<tr>' +
+        '<td><strong>' + (o.cliente||'') + '</strong></td>' +
+        '<td>R$ ' + formatBRL(o.valor) + '</td>' +
+        '<td style="color:#166534;font-weight:700">R$ ' + formatBRL(o.valor_pago||0) + '</td>' +
+        '<td>' + (o.forma_pagamento||'—') + '</td>' +
+        '<td>' + (o.data_pagamento||'—') + '</td>' +
+      '</tr>';
+    }).join('');
+    document.getElementById('ent-tfoot').innerHTML =
+      '<tr><td><strong>TOTAL</strong></td>' +
+      '<td>R$ ' + formatBRL(totTotal) + '</td>' +
+      '<td style="color:#166534;font-weight:800">R$ ' + formatBRL(totPago) + '</td>' +
+      '<td colspan="2"></td></tr>';
+  }
+
+  // Breakdown por forma
+  var formas = ['Pix','Débito','Crédito','Dinheiro','Transferência','Parcelado'];
+  var formaColors = {
+    'Pix':'#0891b2','Débito':'#7c3aed','Crédito':'#d97706',
+    'Dinheiro':'#166534','Transferência':'#1E3A5F','Parcelado':'#991B1B'
+  };
+  var breakHtml = '';
+  formas.forEach(function(f) {
+    var orcsForma = entradas.filter(function(o){ return (o.forma_pagamento||'') === f; });
+    var total = orcsForma.reduce(function(s,o){ return s+(Number(o.valor_pago)||0); }, 0);
+    if (total === 0) return;
+    var cor = formaColors[f] || '#1E3A5F';
+    breakHtml += '<div class="forma-card" style="border-left-color:' + cor + '">' +
+      '<div><div class="fc-nome">' + f + '</div><div class="fc-count">' + orcsForma.length + ' orçamento(s)</div></div>' +
+      '<div class="fc-val" style="color:' + cor + '">R$ ' + formatBRL(total) + '</div>' +
+    '</div>';
+  });
+  // Outros
+  var outros = entradas.filter(function(o){ return !formas.includes(o.forma_pagamento||'') && (Number(o.valor_pago)||0) > 0; });
+  if (outros.length) {
+    var totOutros = outros.reduce(function(s,o){ return s+(Number(o.valor_pago)||0); }, 0);
+    breakHtml += '<div class="forma-card" style="border-left-color:#6B7280">' +
+      '<div><div class="fc-nome">Outros/Sem forma</div><div class="fc-count">' + outros.length + ' orçamento(s)</div></div>' +
+      '<div class="fc-val" style="color:#6B7280">R$ ' + formatBRL(totOutros) + '</div>' +
+    '</div>';
+  }
+  if (!breakHtml) {
+    breakHtml = '<p style="color:#aaa;font-size:12px;text-align:center;padding:20px 0">Nenhum pagamento registrado.</p>';
+  }
+  document.getElementById('breakdown-formas').innerHTML = breakHtml;
+}
+
+// ── SEÇÃO C: Tabela completa ──────────────────────────────────────────
+function renderSecaoC() {
+  var mes = getMesFiltro();
+  var ano = getAnoFiltro();
+  var cliente = document.getElementById('filtro-cliente').value.toLowerCase();
+  var tcForma = document.getElementById('tc-filtro-forma').value;
+  var tcPgto = document.getElementById('tc-filtro-pgto').value;
+
+  var lista = orcDoMes(mes, ano).filter(function(o) {
+    var matchCliente = !cliente || (o.cliente||'').toLowerCase().includes(cliente);
+    var matchForma = !tcForma || (o.forma_pagamento||'') === tcForma;
+    var matchPgto = pgtoFiltroPassar(o, tcPgto);
+    return matchCliente && matchForma && matchPgto;
+  });
+
+  document.getElementById('tc-titulo').textContent =
+    MESES_NOMES[mes] + '/' + ano + ' — ' + lista.length + ' orçamento(s)';
+
+  var tbody = document.getElementById('tc-tbody');
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:#aaa;font-size:12px">Nenhum orçamento encontrado para os filtros selecionados.</td></tr>';
+    document.getElementById('tc-tfoot').innerHTML = '';
+    return;
+  }
+
+  var totTotal = lista.reduce(function(s,o){ return s+(Number(o.valor)||0); }, 0);
+  var totPago  = lista.reduce(function(s,o){ return s+(Number(o.valor_pago)||0); }, 0);
+  var totRest  = lista.reduce(function(s,o){
+    var vp=Number(o.valor_pago)||0; var vt=Number(o.valor)||0;
+    return s+(vp<vt ? vt-vp : 0);
+  }, 0);
+
+  tbody.innerHTML = lista.map(function(o) {
+    var vt = Number(o.valor) || 0;
+    var vp = Number(o.valor_pago) || 0;
+    var rest = vt-vp > 0 ? vt-vp : 0;
+    return '<tr class="' + rowClassTC(o) + '">' +
+      '<td><strong style="color:#1E3A5F">' + (o.numero||'') + '</strong></td>' +
+      '<td>' + (o.cliente||'') + '</td>' +
+      '<td>R$ ' + formatBRL(vt) + '</td>' +
+      '<td style="font-weight:700;color:#166534">R$ ' + formatBRL(vp) + '</td>' +
+      '<td style="color:#991B1B">R$ ' + formatBRL(rest) + '</td>' +
+      '<td>' + (o.data_pagamento||'—') + '</td>' +
+      '<td>' + (o.forma_pagamento||'—') + '</td>' +
+      '<td>' + statusBadge(o.status) + '</td>' +
+      '<td>' + statusPgtoBadge(o) + '</td>' +
+      '<td><div class="actions">' +
+        '<button class="btn btn-sm btn-outline" onclick="abrirModal(\'' + o.id + '\')">Editar pgto</button>' +
+        '<button class="btn btn-sm btn-primary" onclick="verPDF(\'' + o.id + '\')">PDF</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+
+  document.getElementById('tc-tfoot').innerHTML =
+    '<tr>' +
+      '<td colspan="2">TOTAL (' + lista.length + ')</td>' +
+      '<td>R$ ' + formatBRL(totTotal) + '</td>' +
+      '<td>R$ ' + formatBRL(totPago) + '</td>' +
+      '<td>R$ ' + formatBRL(totRest) + '</td>' +
+      '<td colspan="5"></td>' +
+    '</tr>';
+}
+
+// ── Modal edição de pagamento ─────────────────────────────────────────
 function formatModalValor(el) {
   var v = el.value.replace(/\D/g, '');
   if (!v) { el.value = ''; return; }
@@ -260,15 +541,16 @@ function fecharModal() {
 
 function salvarPagamento() {
   var id = document.getElementById('modal-orc-id').value;
-  var orcs = getOrcamentos();
-  var orc = orcs.find(function(o){ return o.id === id; });
+  var orc = getOrcamentos().find(function(o){ return o.id === id; });
   if (!orc) return;
   orc.valor_pago = parseBRL(document.getElementById('modal-valor-pago').value) || 0;
   orc.forma_pagamento = document.getElementById('modal-forma').value;
   orc.data_pagamento = document.getElementById('modal-data').value;
   saveOrcamento(orc);
   fecharModal();
-  renderTabela();
+  renderSecaoB();
+  renderSecaoC();
+  renderPanorama();
 }
 
 function verPDF(id) {
@@ -276,69 +558,14 @@ function verPDF(id) {
   if (orc) gerarPDF(orc);
 }
 
-// Fechar modal clicando fora
 document.getElementById('modal-pgto').addEventListener('click', function(e) {
   if (e.target === this) fecharModal();
 });
 
-function renderTabela() {
-  var lista = filtrarOrcamentos();
-
-  // Calcular resumo
-  var totOrcado = lista.reduce(function(s,o){ return s + (Number(o.valor)||0); }, 0);
-  var totPago = lista.reduce(function(s,o){ return s + (Number(o.valor_pago)||0); }, 0);
-  var totPend = lista.reduce(function(s,o){
-    var vp = Number(o.valor_pago)||0; var vt = Number(o.valor)||0;
-    return s + (vp < vt ? vt - vp : 0);
-  }, 0);
-  var pct = totOrcado > 0 ? Math.round(totPago / totOrcado * 100) : 0;
-
-  document.getElementById('resumo-cards').innerHTML =
-    '<div class="resumo-card"><div class="r-label">Total Orçado</div><div class="r-value">R$ ' + formatBRL(totOrcado) + '</div></div>' +
-    '<div class="resumo-card green"><div class="r-label">Total Pago</div><div class="r-value">R$ ' + formatBRL(totPago) + '</div></div>' +
-    '<div class="resumo-card orange"><div class="r-label">Total Pendente</div><div class="r-value">R$ ' + formatBRL(totPend) + '</div></div>' +
-    '<div class="resumo-card teal"><div class="r-label">% Recebimento</div><div class="r-value">' + pct + '%</div></div>';
-
-  // Tabela
-  var tbody = document.getElementById('tbody-fin');
-  if (!lista.length) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:#aaa">Nenhum orçamento encontrado para os filtros selecionados.</td></tr>';
-    document.getElementById('tfoot-fin').innerHTML = '';
-    return;
-  }
-
-  tbody.innerHTML = lista.map(function(o) {
-    var vt = Number(o.valor) || 0;
-    var vp = Number(o.valor_pago) || 0;
-    var rest = vt - vp > 0 ? vt - vp : 0;
-    return '<tr class="' + rowClass(o) + '">' +
-      '<td><strong style="color:#1E3A5F">' + (o.numero||'') + '</strong></td>' +
-      '<td>' + (o.cliente||'') + '</td>' +
-      '<td>R$ ' + formatBRL(vt) + '</td>' +
-      '<td>R$ ' + formatBRL(vp) + '</td>' +
-      '<td>R$ ' + formatBRL(rest) + '</td>' +
-      '<td>' + (o.data_pagamento || '—') + '</td>' +
-      '<td>' + (o.forma_pagamento || '—') + '</td>' +
-      '<td>' + statusPgtoBadge(o) + '</td>' +
-      '<td><div class="actions">' +
-        '<button class="btn btn-sm btn-outline" onclick="abrirModal(\'' + o.id + '\')">Editar pgto</button>' +
-        '<button class="btn btn-sm btn-primary" onclick="verPDF(\'' + o.id + '\')">PDF</button>' +
-      '</div></td>' +
-      '</tr>';
-  }).join('');
-
-  // Rodapé totais
-  document.getElementById('tfoot-fin').innerHTML =
-    '<tr class="tfoot-total">' +
-      '<td colspan="2">TOTAL (' + lista.length + ' orçamentos)</td>' +
-      '<td>R$ ' + formatBRL(totOrcado) + '</td>' +
-      '<td>R$ ' + formatBRL(totPago) + '</td>' +
-      '<td>R$ ' + formatBRL(totPend) + '</td>' +
-      '<td colspan="4"></td>' +
-    '</tr>';
-}
-
-renderTabela();
+// ── Init ─────────────────────────────────────────────────────────────
+renderPanorama();
+renderSecaoB();
+renderSecaoC();
 </script>
 </body>
 </html>
