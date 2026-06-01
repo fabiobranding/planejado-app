@@ -16,9 +16,15 @@
       <div class="user-info" id="user-name"></div>
     </div>
     <div class="content">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-        <h3 style="color:#1E3A5F;font-size:16px">Todos os Orçamentos</h3>
-        <button class="btn-novo" onclick="location.href='novo-orcamento.html'">+ Novo Orçamento</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+        <h3 style="font-size:16px;color:#1A1A1A">Todos os Orçamentos</h3>
+        <div style="display:flex;gap:10px">
+          <button onclick="abrirModalColar()" style="background:#fff;border:1.5px solid #E8E8E8;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;color:#444;transition:all .2s" onmouseover="this.style.background='#F5F5F5'" onmouseout="this.style.background='#fff'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+            Colar Orçamento
+          </button>
+          <button class="btn-novo" onclick="location.href='novo-orcamento.html'">+ Novo</button>
+        </div>
       </div>
 
       <div class="card">
@@ -43,6 +49,48 @@
           </table>
         </div>
       </div>
+    </div>
+  </div>
+<!-- MODAL COLAR ORÇAMENTO -->
+<div id="modal-colar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:20px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)">
+    <div style="padding:24px 28px;border-bottom:1px solid #F0F0F0;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <h3 style="font-size:17px;font-weight:700;color:#1A1A1A">Colar Orçamento</h3>
+        <p style="font-size:12px;color:#aaa;margin-top:3px">Cole o texto — o sistema interpreta automaticamente</p>
+      </div>
+      <button onclick="fecharModalColar()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#aaa;line-height:1">×</button>
+    </div>
+    <div style="padding:24px 28px">
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <div style="flex:1;min-width:140px">
+          <label style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Cliente</label>
+          <input id="mc-cliente" type="text" placeholder="Nome do cliente" style="width:100%;border:1px solid #E8E8E8;border-radius:8px;padding:8px 12px;font-size:13px;outline:none;background:#FAFAFA">
+        </div>
+        <div style="flex:0 0 140px">
+          <label style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Valor Total</label>
+          <input id="mc-valor" type="text" placeholder="57.990,00" style="width:100%;border:1px solid #E8E8E8;border-radius:8px;padding:8px 12px;font-size:13px;outline:none;background:#FAFAFA">
+        </div>
+      </div>
+      <textarea id="mc-texto" placeholder="Cole o orçamento aqui...
+
+Hall social
+Bancada 1.50x50
+Testeira de 15cm
+Sóculo de 10cm
+Travertino
+
+Jantar
+Bancada de 3.00x60" style="width:100%;min-height:220px;border:1.5px dashed #E0E0E0;border-radius:12px;padding:16px;font-size:13px;font-family:monospace;line-height:1.8;resize:vertical;outline:none;background:#FAFAFA;color:#1A1A1A" oninput="previewColar()"></textarea>
+      <div id="mc-preview" style="display:none;margin-top:12px;background:#F8F8F8;border-radius:10px;padding:12px 16px;font-size:12px;color:#555;line-height:1.8;max-height:150px;overflow-y:auto"></div>
+    </div>
+    <div style="padding:16px 28px;border-top:1px solid #F0F0F0;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+      <button onclick="fecharModalColar()" style="background:#fff;border:1px solid #E8E8E8;border-radius:8px;padding:10px 20px;font-size:13px;cursor:pointer;color:#666">Cancelar</button>
+      <button onclick="salvarColar()" style="background:#444;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer">Salvar no histórico</button>
+      <button onclick="gerarPDFColar()" style="background:#1A1A1A;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Gerar PDF
+      </button>
     </div>
   </div>
 </div>
@@ -215,6 +263,151 @@ function excluir(id) {
 
 renderTabela();
 document.getElementById('mpgto-valor').addEventListener('input', atualizarRestante);
+
+// ── MODAL COLAR ORÇAMENTO ────────────────────────────────────────────
+function abrirModalColar() {
+  document.getElementById('modal-colar').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('mc-texto').focus(); }, 100);
+}
+function fecharModalColar() {
+  document.getElementById('modal-colar').style.display = 'none';
+}
+
+function extrairDescDim(linha) {
+  // "Bancada 1.50x50" ou "Bancada de 3.00x60"
+  var m = linha.match(/^(.+?)\s+(?:de\s+)?(\d+[.,]\d+\s*[xX]\s*\d+(?:[.,]\d+)?(?:\s*cm)?)\s*(.*)$/i);
+  if (m) return { desc: (m[1] + (m[3] ? ' ' + m[3] : '')).trim(), dim: m[2].trim() };
+
+  // "Testeira de 15cm" / "Sóculo de 10cm" / "Rodopia de 60cm"
+  var m2 = linha.match(/^(.+?)\s+de\s+(\d+(?:[.,]\d+)?\s*(?:cm|m|mm)?)\s*$/i);
+  if (m2) return { desc: m2[1].trim(), dim: m2[2].trim() };
+
+  // "2.16x75 fechamentos laterais" — medida no início
+  var m3 = linha.match(/^(\d+[.,]\d+\s*[xX]\s*\d+(?:[.,]\d+)?(?:\s*cm)?)\s+(.+)$/i);
+  if (m3) return { desc: m3[2].trim(), dim: m3[1].trim() };
+
+  // "65x50" no meio da linha
+  var m4 = linha.match(/^(.+?)\s+(\d+\s*[xX]\s*\d+(?:\s*cm)?)\s*(.*)$/i);
+  if (m4) return { desc: (m4[1] + (m4[3] ? ' ' + m4[3] : '')).trim(), dim: m4[2].trim() };
+
+  // "de 60cm" no início
+  var m5 = linha.match(/^de\s+(\d+(?:[.,]\d+)?\s*(?:cm|m)?)\s+(.+)$/i);
+  if (m5) return { desc: m5[2].trim(), dim: m5[1].trim() };
+
+  return { desc: linha, dim: '' };
+}
+
+var _orcColar = null;
+
+function parsearColar() {
+  var texto = document.getElementById('mc-texto').value;
+  var clienteInput = document.getElementById('mc-cliente').value.trim();
+  var valorInput = parseBRL(document.getElementById('mc-valor').value);
+  var linhas = texto.split('\n').map(function(l){ return l.trim(); });
+
+  var cliente = clienteInput;
+  var valor = valorInput;
+
+  // Extrair cliente e valor do texto
+  linhas.forEach(function(l, idx) {
+    if (!cliente && /^cliente\s*:/i.test(l)) {
+      cliente = l.replace(/^cliente\s*:/i,'').trim();
+      document.getElementById('mc-cliente').value = cliente;
+    }
+    if (/valor\s*total/i.test(l) || /^r\$\s*[\d]/i.test(l)) {
+      var mv = l.match(/R\$\s*([\d.,]+)/i);
+      if (mv && !valorInput) { valor = parseBRL(mv[1]); document.getElementById('mc-valor').value = formatBRL(valor); }
+      else if (!mv && idx+1 < linhas.length) {
+        var mv2 = linhas[idx+1].match(/R\$\s*([\d.,]+)/i);
+        if (mv2 && !valorInput) { valor = parseBRL(mv2[1]); document.getElementById('mc-valor').value = formatBRL(valor); }
+      }
+    }
+  });
+
+  // Agrupar por blocos separados por linha vazia
+  var blocos = [], bloco = [];
+  linhas.forEach(function(l) {
+    if (!l) { if (bloco.length) { blocos.push(bloco); bloco = []; } }
+    else {
+      if (/^(cliente|orçamento|valor\s*total|r\$\s*[\d])/i.test(l)) return;
+      bloco.push(l);
+    }
+  });
+  if (bloco.length) blocos.push(bloco);
+
+  var ambientes = [];
+  blocos.forEach(function(b) {
+    if (!b.length) return;
+    var nome = b[0];
+    var itens = b.slice(1)
+      .filter(function(l){ return l && !/^(travertino|taj\s*mahal|granito|mármore|marmore|quartzito|onix|basalto)/i.test(l) || b.length <= 2; })
+      .map(function(l) {
+        var parsed = extrairDescDim(l);
+        return { desc: parsed.desc, dim: parsed.dim, qtd: '', obs: '' };
+      });
+    // Material = última linha se for nome de pedra
+    var lastLine = b[b.length - 1];
+    var material = '';
+    if (/^(travertino|taj\s*mahal|granito|mármore|marmore|quartzito|onix|basalto)/i.test(lastLine) && b.length > 1) {
+      material = lastLine;
+      itens = b.slice(1, -1).map(function(l) {
+        var p = extrairDescDim(l);
+        return { desc: p.desc, dim: p.dim, qtd: '', obs: material };
+      });
+    }
+    if (nome || itens.length) ambientes.push({ nome: nome, itens: itens });
+  });
+
+  return {
+    id: gerarId(),
+    numero: proximoNumero(),
+    cliente: cliente || 'Cliente',
+    data: hoje(),
+    validade: '15 dias',
+    status: 'Em aberto',
+    material: '',
+    valor: valor,
+    valor_pago: 0,
+    forma_pagamento: '',
+    data_pagamento: '',
+    ambientes: ambientes
+  };
+}
+
+function previewColar() {
+  var orc = parsearColar();
+  _orcColar = orc;
+  var html = '<strong>' + orc.cliente + '</strong> — R$ ' + formatBRL(orc.valor) + '<br>';
+  orc.ambientes.forEach(function(a) {
+    html += '<br><strong style="color:#1A1A1A">' + a.nome + '</strong><br>';
+    a.itens.forEach(function(i) {
+      html += '&nbsp;&nbsp;· ' + i.desc + (i.dim ? ' <em style="color:#888">' + i.dim + '</em>' : '') + '<br>';
+    });
+  });
+  var prev = document.getElementById('mc-preview');
+  prev.innerHTML = html;
+  prev.style.display = 'block';
+}
+
+function gerarPDFColar() {
+  _orcColar = parsearColar();
+  if (!_orcColar.ambientes.length) { alert('Cole o texto do orçamento primeiro.'); return; }
+  gerarPDF(_orcColar);
+}
+
+function salvarColar() {
+  _orcColar = parsearColar();
+  if (!_orcColar.ambientes.length) { alert('Cole o texto do orçamento primeiro.'); return; }
+  saveOrcamento(_orcColar);
+  fecharModalColar();
+  renderTabela();
+  alert('✅ Orçamento salvo!');
+}
+
+// Fechar clicando fora
+document.getElementById('modal-colar').addEventListener('click', function(e) {
+  if (e.target === this) fecharModalColar();
+});
 </script>
 
 <div id="modal-pgto" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center">
