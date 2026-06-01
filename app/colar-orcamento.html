@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Colar Orçamento — OrçaMarmo</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme-glass.css">
+<style>
+.paste-area {
+  width: 100%;
+  min-height: 320px;
+  border: 2px dashed #E0E0E0;
+  border-radius: 16px;
+  padding: 20px;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  line-height: 1.8;
+  resize: vertical;
+  outline: none;
+  background: #FAFAFA;
+  color: #1A1A1A;
+  transition: border-color .2s;
+}
+.paste-area:focus { border-color: #1A1A1A; background: #fff; }
+.preview-section { margin-top: 8px; }
+.preview-ambiente {
+  background: #F5F5F5;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+.preview-ambiente-nome {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1A1A1A;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #E0E0E0;
+}
+.preview-item {
+  font-size: 12px;
+  color: #555;
+  padding: 3px 0;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.preview-item::before { content: '·'; color: #999; flex-shrink: 0; }
+.preview-total {
+  background: #1A1A1A;
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-weight: 700;
+}
+.btn-gerar {
+  background: #1A1A1A;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-gerar:hover { background: #333; }
+.btn-limpar {
+  background: #fff;
+  color: #666;
+  border: 1px solid #E8E8E8;
+  border-radius: 10px;
+  padding: 14px 24px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-limpar:hover { background: #F5F5F5; }
+.hint {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+.field-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.field { display: flex; flex-direction: column; flex: 1; min-width: 140px; }
+.field label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px; }
+.field input { border: 1px solid #E8E8E8; border-radius: 8px; padding: 9px 12px; font-size: 13px; outline: none; background: #FAFAFA; }
+.field input:focus { border-color: #1A1A1A; background: #fff; }
+</style>
+</head>
+<body>
+<div class="app-layout">
+  <div id="sidebar"></div>
+  <div class="main">
+    <div class="topbar">
+      <h2>Colar Orçamento</h2>
+      <div class="user-info" id="user-name"></div>
+    </div>
+    <div class="content">
+
+      <div class="card">
+        <div class="card-title">Cole o texto do orçamento</div>
+        <p style="font-size:13px;color:#888;margin-bottom:16px">Cole qualquer formato de orçamento — o sistema identifica automaticamente o cliente, ambientes, itens e valor.</p>
+
+        <div class="field-row">
+          <div class="field" style="max-width:200px">
+            <label>Cliente (opcional)</label>
+            <input type="text" id="campo-cliente" placeholder="Ex: Bruna">
+          </div>
+          <div class="field" style="max-width:160px">
+            <label>Data</label>
+            <input type="text" id="campo-data" placeholder="01/06/2026">
+          </div>
+          <div class="field" style="max-width:180px">
+            <label>Valor Total (R$)</label>
+            <input type="text" id="campo-valor" placeholder="57.990,00">
+          </div>
+          <div class="field" style="max-width:160px">
+            <label>Validade</label>
+            <input type="text" id="campo-validade" value="15 dias">
+          </div>
+        </div>
+
+        <textarea class="paste-area" id="texto-orcamento" placeholder="Cole o orçamento aqui...
+
+Exemplo:
+Hall social
+Bancada 1.50x50
+Testeira de 15cm
+Travertino
+
+Jantar
+Bancada 3.00x60
+Testeira de 30cm
+Travertino
+
+Valor total: R$ 57.990,00" oninput="parsearLive()"></textarea>
+        <div class="hint">
+          ✦ Cada linha em branco separa um ambiente &nbsp;·&nbsp; Primeira linha do bloco = nome do ambiente &nbsp;·&nbsp; Resto = itens
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div class="card" id="preview-card" style="display:none">
+        <div class="card-title">Preview do orçamento</div>
+        <div id="preview-content"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn-gerar" id="btn-gerar" onclick="gerarDoColar()" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Gerar PDF
+        </button>
+        <button class="btn-gerar" id="btn-salvar" onclick="salvarDoColar()" style="display:none;background:#2a2a2a">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+          Salvar no histórico
+        </button>
+        <button class="btn-limpar" onclick="limpar()">Limpar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/core.js"></script>
+<script src="js/pdf.js"></script>
+<script>
+requireAuth();
+applyStoredTheme();
+applyCompanyTheme();
+document.getElementById('sidebar').innerHTML = renderSidebar('colar');
+renderThemeToggle();
+var u = getUsuario();
+var emp = getEmpresa();
+document.getElementById('user-name').textContent = emp.nome || (u && u.marmoraria) || '';
+document.getElementById('campo-data').value = hoje();
+
+var _orcamentoAtual = null;
+
+function parsearTexto(texto) {
+  var linhas = texto.split('\n').map(function(l){ return l.trim(); });
+  var cliente = document.getElementById('campo-cliente').value.trim();
+  var valorCampo = parseBRL(document.getElementById('campo-valor').value);
+  var validade = document.getElementById('campo-validade').value || '15 dias';
+  var data = document.getElementById('campo-data').value || hoje();
+
+  // Extrair cliente do texto se não preenchido
+  linhas.forEach(function(l) {
+    if (!cliente && /^cliente\s*:/i.test(l)) {
+      cliente = l.replace(/^cliente\s*:/i,'').trim();
+      document.getElementById('campo-cliente').value = cliente;
+    }
+  });
+
+  // Extrair valor do texto
+  var valorTexto = 0;
+  linhas.forEach(function(l, idx) {
+    if (/valor\s*total/i.test(l)) {
+      var m = l.match(/R\$\s*([\d.,]+)/);
+      if (m) { valorTexto = parseBRL(m[1]); }
+      else if (idx+1 < linhas.length) {
+        var m2 = linhas[idx+1].match(/R\$\s*([\d.,]+)/);
+        if (m2) { valorTexto = parseBRL(m2[1]); }
+      }
+    }
+    var m3 = l.match(/^R\$\s*([\d.,]+)/);
+    if (m3) valorTexto = parseBRL(m3[1]);
+  });
+
+  var valor = valorCampo || valorTexto;
+  if (valor && !valorCampo) {
+    document.getElementById('campo-valor').value = formatBRL(valor);
+  }
+
+  // Agrupar por blocos separados por linha vazia
+  var blocos = [];
+  var blocoAtual = [];
+  linhas.forEach(function(l) {
+    if (!l) {
+      if (blocoAtual.length) { blocos.push(blocoAtual); blocoAtual = []; }
+    } else {
+      // Ignorar linhas de cabeçalho
+      if (/^(cliente|orçamento|valor\s*total|r\$\s*[\d])/i.test(l)) return;
+      blocoAtual.push(l);
+    }
+  });
+  if (blocoAtual.length) blocos.push(blocoAtual);
+
+  // Cada bloco → ambiente
+  var ambientes = [];
+  blocos.forEach(function(bloco) {
+    if (!bloco.length) return;
+    var nome = bloco[0];
+    var itens = bloco.slice(1).map(function(l) {
+      return { desc: l, dim: '', qtd: '', obs: '' };
+    });
+    if (itens.length || nome) {
+      ambientes.push({ nome: nome, itens: itens });
+    }
+  });
+
+  return {
+    id: gerarId(),
+    numero: proximoNumero(),
+    cliente: cliente || 'Cliente',
+    data: data,
+    validade: validade,
+    status: 'Em aberto',
+    material: '',
+    valor: valor,
+    valor_pago: 0,
+    forma_pagamento: '',
+    data_pagamento: '',
+    ambientes: ambientes
+  };
+}
+
+function parsearLive() {
+  var texto = document.getElementById('texto-orcamento').value;
+  if (!texto.trim()) {
+    document.getElementById('preview-card').style.display = 'none';
+    document.getElementById('btn-gerar').style.display = 'none';
+    document.getElementById('btn-salvar').style.display = 'none';
+    _orcamentoAtual = null;
+    return;
+  }
+
+  _orcamentoAtual = parsearTexto(texto);
+  renderPreview(_orcamentoAtual);
+  document.getElementById('preview-card').style.display = 'block';
+  document.getElementById('btn-gerar').style.display = 'flex';
+  document.getElementById('btn-salvar').style.display = 'flex';
+}
+
+function renderPreview(orc) {
+  var html = '<div style="margin-bottom:12px"><strong style="font-size:13px">Cliente:</strong> ' + orc.cliente + ' &nbsp;·&nbsp; <strong>Data:</strong> ' + orc.data + ' &nbsp;·&nbsp; <strong>Validade:</strong> ' + orc.validade + '</div>';
+
+  orc.ambientes.forEach(function(amb) {
+    html += '<div class="preview-ambiente">';
+    html += '<div class="preview-ambiente-nome">' + amb.nome + '</div>';
+    amb.itens.forEach(function(item) {
+      html += '<div class="preview-item">' + item.desc + '</div>';
+    });
+    html += '</div>';
+  });
+
+  if (orc.valor) {
+    html += '<div class="preview-total"><span>VALOR TOTAL</span><span>R$ ' + formatBRL(orc.valor) + '</span></div>';
+  }
+
+  document.getElementById('preview-content').innerHTML = html;
+}
+
+function gerarDoColar() {
+  if (!_orcamentoAtual) return;
+  // Atualizar com campos manuais antes de gerar
+  _orcamentoAtual = parsearTexto(document.getElementById('texto-orcamento').value);
+  gerarPDF(_orcamentoAtual);
+}
+
+function salvarDoColar() {
+  if (!_orcamentoAtual) return;
+  _orcamentoAtual = parsearTexto(document.getElementById('texto-orcamento').value);
+  saveOrcamento(_orcamentoAtual);
+  alert('✅ Orçamento salvo no histórico!');
+  window.location.href = 'orcamentos.html';
+}
+
+function limpar() {
+  document.getElementById('texto-orcamento').value = '';
+  document.getElementById('campo-cliente').value = '';
+  document.getElementById('campo-valor').value = '';
+  document.getElementById('preview-card').style.display = 'none';
+  document.getElementById('btn-gerar').style.display = 'none';
+  document.getElementById('btn-salvar').style.display = 'none';
+  _orcamentoAtual = null;
+}
+
+// Atualizar preview ao mudar campos manuais
+['campo-cliente','campo-valor','campo-data','campo-validade'].forEach(function(id) {
+  document.getElementById(id).addEventListener('input', parsearLive);
+});
+</script>
+</body>
+</html>
